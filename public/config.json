@@ -1,0 +1,30 @@
+{
+  "auditUserId": "e3d3d338-2053-4ce9-877d-de4563fe321c",
+  "defaultBackendId": "java",
+  "backends": [
+    {
+      "id": "java",
+      "label": "Java-Blueprint (Spring Boot)",
+      "kind": "blueprint-api",
+      "baseUrl": "/backend/java/api/v1"
+    },
+    {
+      "id": "net-api",
+      "label": "NET-Blueprint – Controller API",
+      "kind": "blueprint-api",
+      "baseUrl": "/backend/net-api/api/v1"
+    },
+    {
+      "id": "net-minimal-api",
+      "label": "NET-Blueprint – Minimal API",
+      "kind": "blueprint-api",
+      "baseUrl": "/backend/net-minimal-api/api/v1"
+    },
+    {
+      "id": "net-minimal",
+      "label": "NET-Blueprint.Minimal (standalone)",
+      "kind": "blueprint-minimal",
+      "baseUrl": "/backend/net-minimal-standalone"
+    }
+  ]
+}

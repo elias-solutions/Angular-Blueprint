@@ -1,0 +1,131 @@
+<a mat-button routerLink="/persons" class="back-link">
+  <mat-icon>arrow_back</mat-icon> Alle Personen
+</a>
+
+<div class="progress-slot">
+  @if (store.loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+</div>
+
+@if (person(); as person) {
+  <header class="page-header">
+    <div>
+      <h1>{{ person.firstName }} {{ person.lastName }}</h1>
+      <p class="subtitle">Geboren am {{ person.birthday | date: 'dd.MM.yyyy' }}</p>
+    </div>
+    <div class="header-actions" [matTooltip]="store.canWrite() ? '' : readOnlyHint">
+      <button mat-stroked-button [disabled]="!store.canWrite()" (click)="editPerson(person)">
+        <mat-icon>edit</mat-icon> Bearbeiten
+      </button>
+      <button
+        mat-stroked-button
+        class="danger-outline"
+        [disabled]="!store.canWrite()"
+        (click)="removePerson(person)"
+      >
+        <mat-icon>delete</mat-icon> Löschen
+      </button>
+    </div>
+  </header>
+
+  <mat-card appearance="outlined" class="meta-card">
+    <mat-card-content>
+      <dl class="meta">
+        <div>
+          <dt>Erstellt</dt>
+          <dd>{{ person.createdDate | date: 'dd.MM.yyyy HH:mm' }}</dd>
+        </div>
+        <div>
+          <dt>Geändert</dt>
+          <dd>
+            {{ person.modifiedDate ? (person.modifiedDate | date: 'dd.MM.yyyy HH:mm') : '–' }}
+          </dd>
+        </div>
+        <div>
+          <dt>ID</dt>
+          <dd class="mono">{{ person.id }}</dd>
+        </div>
+        <div>
+          <dt>Version</dt>
+          <dd class="mono">{{ person.version }}</dd>
+        </div>
+      </dl>
+    </mat-card-content>
+  </mat-card>
+
+  <section class="mat-elevation-z1 table-card">
+    <div class="section-header">
+      <h2>Adressen</h2>
+      <span [matTooltip]="store.canWrite() ? '' : readOnlyHint">
+        <button mat-flat-button [disabled]="!store.canWrite()" (click)="addAddress(person)">
+          <mat-icon>add_location_alt</mat-icon> Adresse hinzufügen
+        </button>
+      </span>
+    </div>
+
+    <div class="table-scroll">
+      <table mat-table [dataSource]="person.addresses">
+        <ng-container matColumnDef="street">
+          <th mat-header-cell *matHeaderCellDef>Strasse</th>
+          <td mat-cell *matCellDef="let address">{{ address.street }} {{ address.number }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="postalCode">
+          <th mat-header-cell *matHeaderCellDef>PLZ</th>
+          <td mat-cell *matCellDef="let address">{{ address.postalCode }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="city">
+          <th mat-header-cell *matHeaderCellDef>Ort</th>
+          <td mat-cell *matCellDef="let address">{{ address.city }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="changed">
+          <th mat-header-cell *matHeaderCellDef>Letzte Änderung</th>
+          <td mat-cell *matCellDef="let address">
+            {{ address.modifiedDate ?? address.createdDate | date: 'dd.MM.yyyy HH:mm' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="actions-cell"></th>
+          <td mat-cell *matCellDef="let address" class="actions-cell">
+            <button
+              mat-icon-button
+              matTooltip="Bearbeiten"
+              aria-label="Adresse bearbeiten"
+              [disabled]="!store.canWrite()"
+              (click)="editAddress(person, address)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matTooltip="Löschen"
+              aria-label="Adresse löschen"
+              [disabled]="!store.canWrite()"
+              (click)="removeAddress(person, address)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="addressColumns"></tr>
+        <tr mat-row *matRowDef="let address; columns: addressColumns"></tr>
+        <tr class="mat-mdc-row" *matNoDataRow>
+          <td class="mat-mdc-cell empty-cell" [attr.colspan]="addressColumns.length">
+            Keine Adressen erfasst.
+          </td>
+        </tr>
+      </table>
+    </div>
+  </section>
+} @else if (!store.loading()) {
+  <section class="not-found">
+    <mat-icon>person_off</mat-icon>
+    <p>Die Person wurde nicht gefunden.</p>
+    <a mat-flat-button routerLink="/persons">Zur Übersicht</a>
+  </section>
+}

@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Person bearbeiten' : 'Neue Person' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()" id="person-form">
+  <mat-dialog-content class="form-grid">
+    <mat-form-field>
+      <mat-label>Vorname</mat-label>
+      <input matInput formControlName="firstName" [maxlength]="maxLength" cdkFocusInitial />
+      @if (form.controls.firstName.invalid) {
+        <mat-error>Vorname ist erforderlich.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Nachname</mat-label>
+      <input matInput formControlName="lastName" [maxlength]="maxLength" />
+      @if (form.controls.lastName.invalid) {
+        <mat-error>Nachname ist erforderlich.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="span-2">
+      <mat-label>Geburtsdatum</mat-label>
+      <input matInput formControlName="birthday" [matDatepicker]="picker" [max]="today" />
+      <mat-hint>TT.MM.JJJJ</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker" />
+      <mat-datepicker #picker startView="multi-year" />
+      @if (form.controls.birthday.hasError('future')) {
+        <mat-error>Das Geburtsdatum darf nicht in der Zukunft liegen.</mat-error>
+      } @else if (form.controls.birthday.invalid) {
+        <mat-error>Gültiges Geburtsdatum ist erforderlich.</mat-error>
+      }
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Abbrechen</button>
+    <button mat-flat-button type="submit">{{ isEdit ? 'Speichern' : 'Erstellen' }}</button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,51 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { ApiErrorMapper } from './api-error-mapper';
+
+describe('ApiErrorMapper', () => {
+  const mapper = new ApiErrorMapper();
+  const httpError = (status: number, error: unknown = null) =>
+    new HttpErrorResponse({ status, error, url: '/api/v1/persons' });
+
+  it('reports an unreachable backend', () => {
+    expect(mapper.toMessage(httpError(0))).toBe('Backend nicht erreichbar.');
+  });
+
+  it.each([429, 503])('reports rate limiting for status %s', (status) => {
+    expect(mapper.toMessage(httpError(status))).toBe(
+      'Zu viele Anfragen – bitte einen Moment warten.',
+    );
+  });
+
+  it('prefers the problem details detail over the title', () => {
+    const error = httpError(400, {
+      title: 'BadRequest - Entity version conflict',
+      status: 400,
+      detail: 'Entity has been updated through other user.',
+    });
+
+    expect(mapper.toMessage(error)).toBe('Entity has been updated through other user.');
+  });
+
+  it('lists validation errors from a validation problem', () => {
+    const error = httpError(400, {
+      title: 'One or more validation errors occurred.',
+      status: 400,
+      errors: {
+        FirstName: ['The FirstName field is required.'],
+        City: ['Required.', 'Too short.'],
+      },
+    });
+
+    expect(mapper.toMessage(error)).toBe('The FirstName field is required. Required. Too short.');
+  });
+
+  it('falls back to the title when there is no detail', () => {
+    expect(mapper.toMessage(httpError(400, { title: 'Id mismatch', status: 400 }))).toBe(
+      'Id mismatch',
+    );
+  });
+
+  it('falls back to the status for unknown bodies', () => {
+    expect(mapper.toMessage(httpError(500, '<html>'))).toBe('Serverfehler (HTTP 500).');
+  });
+});

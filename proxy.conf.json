@@ -1,0 +1,24 @@
+{
+  "/backend/java": {
+    "target": "http://localhost:5105",
+    "pathRewrite": { "^/backend/java": "" },
+    "changeOrigin": true
+  },
+  "/backend/net-api": {
+    "target": "https://localhost:7102",
+    "pathRewrite": { "^/backend/net-api": "" },
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/backend/net-minimal-api": {
+    "target": "https://localhost:7202",
+    "pathRewrite": { "^/backend/net-minimal-api": "" },
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/backend/net-minimal-standalone": {
+    "target": "http://localhost:5237",
+    "pathRewrite": { "^/backend/net-minimal-standalone": "" },
+    "changeOrigin": true
+  }
+}
