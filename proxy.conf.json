@@ -5,20 +5,13 @@
     "changeOrigin": true
   },
   "/backend/net-api": {
-    "target": "https://localhost:7102",
+    "target": "http://localhost:5102",
     "pathRewrite": { "^/backend/net-api": "" },
-    "secure": false,
     "changeOrigin": true
   },
   "/backend/net-minimal-api": {
-    "target": "https://localhost:7202",
+    "target": "http://localhost:5206",
     "pathRewrite": { "^/backend/net-minimal-api": "" },
-    "secure": false,
-    "changeOrigin": true
-  },
-  "/backend/net-minimal-standalone": {
-    "target": "http://localhost:5237",
-    "pathRewrite": { "^/backend/net-minimal-standalone": "" },
     "changeOrigin": true
   }
 }

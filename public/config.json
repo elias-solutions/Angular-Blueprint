@@ -19,12 +19,6 @@
       "label": "NET-Blueprint – Minimal API",
       "kind": "blueprint-api",
       "baseUrl": "/backend/net-minimal-api/api/v1"
-    },
-    {
-      "id": "net-minimal",
-      "label": "NET-Blueprint.Minimal (standalone)",
-      "kind": "blueprint-minimal",
-      "baseUrl": "/backend/net-minimal-standalone"
     }
   ]
 }
