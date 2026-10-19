@@ -3,7 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { AuditContext } from '../../../core/audit/audit-context';
 import { BackendConfig } from '../../../core/config/app-config';
-import { Address, AddressDraft, EMPTY_GUID, Person, PersonDraft } from '../domain/person';
+import {
+  Address,
+  AddressDraft,
+  EMPTY_GUID,
+  Person,
+  PersonDraft,
+  toPersonProfile,
+} from '../domain/person';
 import {
   CreatePersonRequest,
   CreatePersonResponse,
@@ -39,9 +46,7 @@ class BlueprintPersonApi implements PersonApi {
     const createdId = this.audit.userId();
     const createdDate = this.audit.now();
     const request: CreatePersonRequest = {
-      firstName: draft.firstName,
-      lastName: draft.lastName,
-      birthday: draft.birthday,
+      ...toPersonProfile(draft),
       createdId,
       createdDate,
       addresses: draft.addresses.map((address) => ({
@@ -63,9 +68,7 @@ class BlueprintPersonApi implements PersonApi {
     const modifiedDate = this.audit.now();
     const request: UpdatePersonRequest = {
       id: original.id,
-      firstName: draft.firstName,
-      lastName: draft.lastName,
-      birthday: draft.birthday,
+      ...toPersonProfile(draft),
       createdId: original.createdId,
       createdDate: original.createdDate,
       modifiedId,

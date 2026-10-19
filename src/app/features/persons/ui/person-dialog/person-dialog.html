@@ -1,38 +1,86 @@
 <h2 mat-dialog-title>{{ isEdit ? 'Person bearbeiten' : 'Neue Person' }}</h2>
 
 <form [formGroup]="form" (ngSubmit)="save()" id="person-form">
-  <mat-dialog-content class="form-grid">
-    <mat-form-field>
-      <mat-label>Vorname</mat-label>
-      <input matInput formControlName="firstName" [maxlength]="maxLength" cdkFocusInitial />
-      @if (form.controls.firstName.invalid) {
-        <mat-error>Vorname ist erforderlich.</mat-error>
-      }
-    </mat-form-field>
+  <mat-dialog-content>
+    <div class="form-grid">
+      <mat-form-field>
+        <mat-label>Vorname</mat-label>
+        <input matInput formControlName="firstName" [maxlength]="maxLength" cdkFocusInitial />
+        @if (form.controls.firstName.invalid) {
+          <mat-error>Vorname ist erforderlich.</mat-error>
+        }
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Nachname</mat-label>
-      <input matInput formControlName="lastName" [maxlength]="maxLength" />
-      @if (form.controls.lastName.invalid) {
-        <mat-error>Nachname ist erforderlich.</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>Nachname</mat-label>
+        <input matInput formControlName="lastName" [maxlength]="maxLength" />
+        @if (form.controls.lastName.invalid) {
+          <mat-error>Nachname ist erforderlich.</mat-error>
+        }
+      </mat-form-field>
 
-    <mat-form-field class="span-2">
-      <mat-label>Geburtsdatum</mat-label>
-      <input matInput formControlName="birthday" [matDatepicker]="picker" [max]="today" />
-      <mat-hint>TT.MM.JJJJ</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker" />
-      <mat-datepicker #picker startView="multi-year" />
-      @if (form.controls.birthday.hasError('future')) {
-        <mat-error>Das Geburtsdatum darf nicht in der Zukunft liegen.</mat-error>
-      } @else if (form.controls.birthday.invalid) {
-        <mat-error>Gültiges Geburtsdatum ist erforderlich.</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>Geburtsdatum</mat-label>
+        <input matInput formControlName="birthday" [matDatepicker]="picker" [max]="today" />
+        <mat-hint>TT.MM.JJJJ (optional)</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker" />
+        <mat-datepicker #picker startView="multi-year" />
+        @if (form.controls.birthday.hasError('future')) {
+          <mat-error>Darf nicht in der Zukunft liegen.</mat-error>
+        } @else if (form.controls.birthday.invalid) {
+          <mat-error>Ungültiges Geburtsdatum.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Geschlecht</mat-label>
+        <mat-select formControlName="gender">
+          <mat-option [value]="null">–</mat-option>
+          @for (gender of genders; track gender) {
+            <mat-option [value]="gender">{{ genderLabels[gender] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>E-Mail</mat-label>
+        <input matInput type="email" formControlName="email" [maxlength]="emailMaxLength" />
+        @if (form.controls.email.invalid) {
+          <mat-error>Gültige E-Mail-Adresse erforderlich.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Telefon</mat-label>
+        <input matInput type="tel" formControlName="phone" [maxlength]="phoneMaxLength" />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Typ</mat-label>
+        <mat-select formControlName="type">
+          <mat-option [value]="null">–</mat-option>
+          @for (type of personTypes; track type) {
+            <mat-option [value]="type">{{ personTypeLabels[type] }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="span-2">
+        <mat-label>Beschreibung</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          rows="4"
+          [maxlength]="descriptionMaxLength"
+        ></textarea>
+        <mat-hint align="end">
+          {{ form.controls.description.value.length }} / {{ descriptionMaxLength }}
+        </mat-hint>
+      </mat-form-field>
+    </div>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
+  <mat-dialog-actions>
     <button mat-button type="button" mat-dialog-close>Abbrechen</button>
     <button mat-flat-button type="submit">{{ isEdit ? 'Speichern' : 'Erstellen' }}</button>
   </mat-dialog-actions>

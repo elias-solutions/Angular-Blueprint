@@ -1,41 +1,43 @@
 <h2 mat-dialog-title>{{ isEdit ? 'Adresse bearbeiten' : 'Neue Adresse' }}</h2>
 
 <form [formGroup]="form" (ngSubmit)="save()">
-  <mat-dialog-content class="form-grid address-grid">
-    <mat-form-field class="street">
-      <mat-label>Strasse</mat-label>
-      <input matInput formControlName="street" [maxlength]="maxLength" cdkFocusInitial />
-      @if (form.controls.street.invalid) {
-        <mat-error>Strasse ist erforderlich.</mat-error>
-      }
-    </mat-form-field>
+  <mat-dialog-content>
+    <div class="form-grid address-grid">
+      <mat-form-field class="wide">
+        <mat-label>Strasse</mat-label>
+        <input matInput formControlName="street" [maxlength]="maxLength" cdkFocusInitial />
+        @if (form.controls.street.invalid) {
+          <mat-error>Strasse ist erforderlich.</mat-error>
+        }
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>Nr.</mat-label>
-      <input matInput formControlName="number" [maxlength]="maxLength" />
-      @if (form.controls.number.invalid) {
-        <mat-error>Erforderlich.</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>Nr.</mat-label>
+        <input matInput formControlName="number" [maxlength]="maxLength" />
+        @if (form.controls.number.invalid) {
+          <mat-error>Erforderlich.</mat-error>
+        }
+      </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>PLZ</mat-label>
-      <input matInput formControlName="postalCode" [maxlength]="maxLength" />
-      @if (form.controls.postalCode.invalid) {
-        <mat-error>Erforderlich.</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>PLZ</mat-label>
+        <input matInput formControlName="postalCode" [maxlength]="maxLength" />
+        @if (form.controls.postalCode.invalid) {
+          <mat-error>Erforderlich.</mat-error>
+        }
+      </mat-form-field>
 
-    <mat-form-field class="city">
-      <mat-label>Ort</mat-label>
-      <input matInput formControlName="city" [maxlength]="maxLength" />
-      @if (form.controls.city.invalid) {
-        <mat-error>Ort ist erforderlich.</mat-error>
-      }
-    </mat-form-field>
+      <mat-form-field class="wide">
+        <mat-label>Ort</mat-label>
+        <input matInput formControlName="city" [maxlength]="maxLength" />
+        @if (form.controls.city.invalid) {
+          <mat-error>Ort ist erforderlich.</mat-error>
+        }
+      </mat-form-field>
+    </div>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
+  <mat-dialog-actions>
     <button mat-button type="button" mat-dialog-close>Abbrechen</button>
     <button mat-flat-button type="submit">{{ isEdit ? 'Speichern' : 'Hinzufügen' }}</button>
   </mat-dialog-actions>

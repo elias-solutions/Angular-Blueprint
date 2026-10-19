@@ -30,6 +30,11 @@ const PERSON: Person = {
   firstName: 'Jonas',
   lastName: 'Elias',
   birthday: '1985-04-12',
+  gender: 'Male',
+  description: 'Senior Consultant',
+  email: 'jonas.elias@example.com',
+  phone: '+41 62 000 00 00',
+  type: 'Employee',
   addresses: [
     {
       id: 'a1',
@@ -88,7 +93,12 @@ describe('BlueprintPersonApi', () => {
     const draft: PersonDraft = {
       firstName: 'Anna',
       lastName: 'Muster',
-      birthday: '1990-01-31',
+      birthday: null,
+      gender: 'Female',
+      description: null,
+      email: 'anna@example.com',
+      phone: null,
+      type: 'Freelancer',
       addresses: [{ id: null, street: 'Weg', number: '3', city: 'Basel', postalCode: '4000' }],
     };
     const result = firstValueFrom(api.create(draft));
@@ -98,7 +108,12 @@ describe('BlueprintPersonApi', () => {
     expect(req.request.body).toEqual({
       firstName: 'Anna',
       lastName: 'Muster',
-      birthday: '1990-01-31',
+      birthday: null,
+      gender: 'Female',
+      description: null,
+      email: 'anna@example.com',
+      phone: null,
+      type: 'Freelancer',
       createdId: USER,
       createdDate: NOW,
       addresses: [
@@ -122,6 +137,11 @@ describe('BlueprintPersonApi', () => {
       firstName: 'Jonas',
       lastName: 'Elias-Muster',
       birthday: '1985-04-12',
+      gender: 'Male',
+      description: 'Architekt',
+      email: 'jonas.elias@example.com',
+      phone: '+41 62 000 00 00',
+      type: 'Freelancer',
       addresses: [
         { id: 'a1', street: 'Neue Strasse', number: '5', city: 'Olten', postalCode: '4600' },
         { id: null, street: 'Weg', number: '3', city: 'Basel', postalCode: '4000' },
@@ -136,6 +156,11 @@ describe('BlueprintPersonApi', () => {
       firstName: 'Jonas',
       lastName: 'Elias-Muster',
       birthday: '1985-04-12',
+      gender: 'Male',
+      description: 'Architekt',
+      email: 'jonas.elias@example.com',
+      phone: '+41 62 000 00 00',
+      type: 'Freelancer',
       createdId: 'creator',
       createdDate: '2026-01-01T00:00:00+00:00',
       modifiedId: USER,

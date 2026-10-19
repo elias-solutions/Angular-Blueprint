@@ -12,7 +12,9 @@
   <header class="page-header">
     <div>
       <h1>{{ person.firstName }} {{ person.lastName }}</h1>
-      <p class="subtitle">Geboren am {{ person.birthday | date: 'dd.MM.yyyy' }}</p>
+      @if (person.birthday) {
+        <p class="subtitle">Geboren am {{ person.birthday | date: 'dd.MM.yyyy' }}</p>
+      }
     </div>
     <div class="header-actions" [matTooltip]="store.canWrite() ? '' : readOnlyHint">
       <button mat-stroked-button [disabled]="!store.canWrite()" (click)="editPerson(person)">
@@ -33,6 +35,47 @@
     <mat-card-content>
       <dl class="meta">
         <div>
+          <dt>Geschlecht</dt>
+          <dd>{{ genderLabel(person.gender) }}</dd>
+        </div>
+        <div>
+          <dt>Typ</dt>
+          <dd>{{ personTypeLabel(person.type) }}</dd>
+        </div>
+        <div>
+          <dt>E-Mail</dt>
+          <dd>
+            @if (person.email) {
+              <a [href]="'mailto:' + person.email">{{ person.email }}</a>
+            } @else {
+              –
+            }
+          </dd>
+        </div>
+        <div>
+          <dt>Telefon</dt>
+          <dd>
+            @if (person.phone) {
+              <a [href]="'tel:' + person.phone">{{ person.phone }}</a>
+            } @else {
+              –
+            }
+          </dd>
+        </div>
+        @if (person.description) {
+          <div class="span-all">
+            <dt>Beschreibung</dt>
+            <dd class="description">{{ person.description }}</dd>
+          </div>
+        }
+      </dl>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined" class="meta-card">
+    <mat-card-content>
+      <dl class="meta">
+        <div>
           <dt>Erstellt</dt>
           <dd>{{ person.createdDate | date: 'dd.MM.yyyy HH:mm' }}</dd>
         </div>
@@ -41,14 +84,6 @@
           <dd>
             {{ person.modifiedDate ? (person.modifiedDate | date: 'dd.MM.yyyy HH:mm') : '–' }}
           </dd>
-        </div>
-        <div>
-          <dt>ID</dt>
-          <dd class="mono">{{ person.id }}</dd>
-        </div>
-        <div>
-          <dt>Version</dt>
-          <dd class="mono">{{ person.version }}</dd>
         </div>
       </dl>
     </mat-card-content>

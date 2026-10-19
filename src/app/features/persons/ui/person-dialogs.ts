@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { firstValueFrom } from 'rxjs';
 import { ConfirmDialog, ConfirmDialogData } from '../../../shared/confirm-dialog/confirm-dialog';
+import { AppDialog } from '../../../shared/dialog/app-dialog';
 import { AddressDraft, Person } from '../domain/person';
 import { AddressDialog, AddressDialogData } from './address-dialog/address-dialog';
 import { PersonDialog, PersonDialogData, PersonDialogResult } from './person-dialog/person-dialog';
@@ -9,29 +8,25 @@ import { PersonDialog, PersonDialogData, PersonDialogResult } from './person-dia
 /** Opens the persons feature's dialogs; resolves `undefined` when the user cancels. */
 @Injectable({ providedIn: 'root' })
 export class PersonDialogs {
-  private readonly dialog = inject(MatDialog);
+  private readonly dialog = inject(AppDialog);
 
   editPerson(person?: Person): Promise<PersonDialogResult | undefined> {
-    const ref = this.dialog.open<PersonDialog, PersonDialogData, PersonDialogResult>(PersonDialog, {
-      data: { person },
-      width: '520px',
+    return this.dialog.open<PersonDialog, PersonDialogData, PersonDialogResult>(PersonDialog, {
+      person,
     });
-    return firstValueFrom(ref.afterClosed());
   }
 
   editAddress(address?: AddressDraft): Promise<AddressDraft | undefined> {
-    const ref = this.dialog.open<AddressDialog, AddressDialogData, AddressDraft>(AddressDialog, {
-      data: { address },
-      width: '560px',
+    return this.dialog.open<AddressDialog, AddressDialogData, AddressDraft>(AddressDialog, {
+      address,
     });
-    return firstValueFrom(ref.afterClosed());
   }
 
   async confirm(data: ConfirmDialogData): Promise<boolean> {
-    const ref = this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
+    const confirmed = await this.dialog.open<ConfirmDialog, ConfirmDialogData, boolean>(
+      ConfirmDialog,
       data,
-      width: '420px',
-    });
-    return (await firstValueFrom(ref.afterClosed())) === true;
+    );
+    return confirmed === true;
   }
 }

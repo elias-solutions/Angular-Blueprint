@@ -19,6 +19,11 @@ const draft: PersonDraft = {
   firstName: 'Jonas',
   lastName: 'Elias',
   birthday: '1985-04-12',
+  gender: null,
+  description: null,
+  email: null,
+  phone: null,
+  type: null,
   addresses: [home, work],
 };
 

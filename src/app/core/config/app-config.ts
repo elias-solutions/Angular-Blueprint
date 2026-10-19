@@ -2,9 +2,8 @@
  * Identifies the REST contract a backend speaks; each kind is served by its own
  * `PersonApi` strategy.
  * - `blueprint-api`: `/api/v1/persons` full CRUD (NET-Blueprint Api + Minimal.Api, Java-Blueprint).
- * - `blueprint-minimal`: `/persons` CRUD without client audit data (standalone NET-Blueprint.Minimal).
  */
-export type BackendKind = 'blueprint-api' | 'blueprint-minimal';
+export type BackendKind = 'blueprint-api';
 
 export interface BackendConfig {
   readonly id: string;

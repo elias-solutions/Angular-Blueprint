@@ -78,23 +78,58 @@ body {
   color: var(--mat-sys-on-surface-variant);
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 16px;
-  row-gap: 4px;
-  padding-top: 8px !important;
+// Shared layout of every dialog opened through `AppDialog` (panel class `app-dialog`).
+.app-dialog {
+  @include mat.dialog-overrides(
+    (
+      headline-padding: 6px 24px 13px,
+      content-padding: 8px 24px 20px,
+      with-actions-content-padding: 8px 24px 0,
+      actions-padding: 8px 24px 20px,
+      actions-alignment: flex-end,
+    )
+  );
 
-  .span-2 {
-    grid-column: span 2;
+  .mat-mdc-dialog-actions {
+    gap: 8px;
   }
 }
 
-.address-grid {
-  grid-template-columns: 3fr 1fr;
+// Form layout inside `mat-dialog-content` (as its own element: Material styles the content
+// element itself, so a grid there would be overridden). Every field fills its cell; the
+// fixed subscript area of each field keeps the vertical rhythm uniform.
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 16px;
+
+  > mat-form-field {
+    width: 100%;
+  }
+
+  > .span-2 {
+    grid-column: 1 / -1;
+  }
 
   @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// Four tracks: `.wide` fields span three (Strasse, Ort), the others one (Nr., PLZ).
+.address-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  > .wide {
+    grid-column: span 3;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    > .wide {
+      grid-column: auto;
+    }
   }
 }
 

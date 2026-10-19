@@ -21,6 +21,7 @@ import { Router } from '@angular/router';
 import { Person, fullName, toPersonDraft } from '../../domain/person';
 import { PersonsStore } from '../../state/persons-store';
 import { PersonDialogs } from '../person-dialogs';
+import { personTypeLabel } from '../person-labels';
 import { personMatchesFilter, personSortValue } from './person-table';
 
 @Component({
@@ -48,14 +49,8 @@ export class PersonListPage {
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
-  protected readonly columns = [
-    'lastName',
-    'firstName',
-    'birthday',
-    'addresses',
-    'changed',
-    'actions',
-  ];
+  protected readonly columns = ['lastName', 'firstName', 'birthday', 'type', 'changed', 'actions'];
+  protected readonly personTypeLabel = personTypeLabel;
   protected readonly dataSource = new MatTableDataSource<Person>([]);
   protected readonly filter = signal('');
 

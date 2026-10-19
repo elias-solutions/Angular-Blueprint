@@ -18,7 +18,7 @@
 <section class="mat-elevation-z1 table-card">
   <mat-form-field class="filter" subscriptSizing="dynamic" appearance="outline">
     <mat-icon matPrefix>search</mat-icon>
-    <mat-label>Suchen (Name, Geburtsdatum, Adresse)</mat-label>
+    <mat-label>Suchen (Name, Geburtsdatum, Typ, Kontakt, Adresse)</mat-label>
     <input matInput #search [value]="filter()" (input)="filter.set(search.value)" />
     @if (filter()) {
       <button matIconSuffix mat-icon-button aria-label="Suche leeren" (click)="filter.set('')">
@@ -53,12 +53,16 @@
 
       <ng-container matColumnDef="birthday">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Geburtsdatum</th>
-        <td mat-cell *matCellDef="let person">{{ person.birthday | date: 'dd.MM.yyyy' }}</td>
+        <td mat-cell *matCellDef="let person">
+          {{ person.birthday ? (person.birthday | date: 'dd.MM.yyyy') : '–' }}
+        </td>
       </ng-container>
 
-      <ng-container matColumnDef="addresses">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Adressen</th>
-        <td mat-cell *matCellDef="let person">{{ person.addresses.length }}</td>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Typ</th>
+        <td mat-cell *matCellDef="let person">
+          {{ personTypeLabel(person.type) }}
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="changed">

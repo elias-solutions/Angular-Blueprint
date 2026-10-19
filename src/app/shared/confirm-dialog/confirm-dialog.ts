@@ -16,7 +16,7 @@ export interface ConfirmDialogData {
   template: `
     <h2 mat-dialog-title>{{ data.title }}</h2>
     <mat-dialog-content>{{ data.message }}</mat-dialog-content>
-    <mat-dialog-actions align="end">
+    <mat-dialog-actions>
       <button mat-button [mat-dialog-close]="false">Abbrechen</button>
       <button mat-flat-button class="danger" [mat-dialog-close]="true" cdkFocusInitial>
         {{ data.confirmLabel }}

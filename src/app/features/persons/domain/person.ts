@@ -1,5 +1,11 @@
 export const EMPTY_GUID = '00000000-0000-0000-0000-000000000000';
 
+export const GENDERS = ['Male', 'Female'] as const;
+export type Gender = (typeof GENDERS)[number];
+
+export const PERSON_TYPES = ['Freelancer', 'Employee'] as const;
+export type PersonType = (typeof PERSON_TYPES)[number];
+
 export interface AuditInfo {
   readonly createdId: string;
   readonly createdDate: string;
@@ -16,12 +22,21 @@ export interface Address extends AuditInfo {
   readonly postalCode: string;
 }
 
-export interface Person extends AuditInfo {
-  readonly id: string;
+/** The person's own data, without identity, audit and addresses. */
+export interface PersonProfile {
   readonly firstName: string;
   readonly lastName: string;
   /** ISO calendar date, `yyyy-MM-dd`. */
-  readonly birthday: string;
+  readonly birthday: string | null;
+  readonly gender: Gender | null;
+  readonly description: string | null;
+  readonly email: string | null;
+  readonly phone: string | null;
+  readonly type: PersonType | null;
+}
+
+export interface Person extends AuditInfo, PersonProfile {
+  readonly id: string;
   readonly addresses: readonly Address[];
 }
 
@@ -34,19 +49,26 @@ export interface AddressDraft {
   readonly postalCode: string;
 }
 
-export interface PersonDraft {
-  readonly firstName: string;
-  readonly lastName: string;
-  /** ISO calendar date, `yyyy-MM-dd`. */
-  readonly birthday: string;
+export interface PersonDraft extends PersonProfile {
   readonly addresses: readonly AddressDraft[];
+}
+
+export function toPersonProfile(source: PersonProfile): PersonProfile {
+  return {
+    firstName: source.firstName,
+    lastName: source.lastName,
+    birthday: source.birthday,
+    gender: source.gender,
+    description: source.description,
+    email: source.email,
+    phone: source.phone,
+    type: source.type,
+  };
 }
 
 export function toPersonDraft(person: Person): PersonDraft {
   return {
-    firstName: person.firstName,
-    lastName: person.lastName,
-    birthday: person.birthday,
+    ...toPersonProfile(person),
     addresses: person.addresses.map(toAddressDraft),
   };
 }

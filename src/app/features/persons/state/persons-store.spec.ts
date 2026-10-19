@@ -13,6 +13,11 @@ const person = (id: string, lastName = 'Elias'): Person => ({
   firstName: 'Jonas',
   lastName,
   birthday: '1985-04-12',
+  gender: null,
+  description: null,
+  email: null,
+  phone: null,
+  type: null,
   addresses: [],
   createdId: 'u',
   createdDate: '2026-01-01T00:00:00Z',
@@ -25,6 +30,11 @@ const DRAFT: PersonDraft = {
   firstName: 'Anna',
   lastName: 'Muster',
   birthday: '1990-01-01',
+  gender: null,
+  description: null,
+  email: null,
+  phone: null,
+  type: null,
   addresses: [],
 };
 

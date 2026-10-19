@@ -23,6 +23,7 @@ import {
 } from '../../domain/person-addresses';
 import { PersonsStore } from '../../state/persons-store';
 import { PersonDialogs } from '../person-dialogs';
+import { genderLabel, personTypeLabel } from '../person-labels';
 
 @Component({
   selector: 'app-person-detail-page',
@@ -54,6 +55,8 @@ export class PersonDetailPage {
   });
   protected readonly addressColumns = ['street', 'postalCode', 'city', 'changed', 'actions'];
   protected readonly readOnlyHint = 'Das aktive Backend ist schreibgeschützt.';
+  protected readonly genderLabel = genderLabel;
+  protected readonly personTypeLabel = personTypeLabel;
 
   constructor() {
     effect(() => {

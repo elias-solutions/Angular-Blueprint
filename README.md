@@ -22,14 +22,11 @@ einen `kind`, der die REST-Strategie bestimmt:
 | `java` | Java-Blueprint | `blueprint-api` | `/backend/java` → http://localhost:5105 |
 | `net-api` | NET-Blueprint / Api (Controller) | `blueprint-api` | `/backend/net-api` → http://localhost:5102 |
 | `net-minimal-api` | NET-Blueprint / Minimal.Api | `blueprint-api` | `/backend/net-minimal-api` → http://localhost:5206 |
-| `net-minimal` | NET-Blueprint.Minimal | `blueprint-minimal` | `/backend/net-minimal-standalone` → http://localhost:5237 |
 
 - Keines der Backends erlaubt CORS → im Dev-Betrieb läuft alles über den Proxy. Für ein Deployment
   `baseUrl` auf die echte URL setzen und im Backend CORS freischalten (oder Reverse-Proxy).
 - Die Ziele sind die HTTP-Ports aus `launchSettings.json` / `application.properties`; `docker-compose.yml`
   mappt die Container auf dieselben Host-Ports → der Proxy funktioniert lokal wie gegen die Container.
-- `NET-Blueprint.Minimal` spricht einen eigenen Vertrag (`/persons` ohne `/api/v1`, keine
-  Audit-Felder im Request, `POST` → 201 mit Person) und hat deshalb eine eigene Strategie.
 - Die Backends erwarten Audit-Daten vom Client: `auditUserId` in `config.json` wird als
   `createdId`/`modifiedId` gesendet.
 

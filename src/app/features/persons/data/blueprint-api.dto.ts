@@ -1,5 +1,6 @@
-/** Wire contract of `/api/v1` shared by NET-Blueprint (Api, Minimal.Api) and Java-Blueprint. */
+import { Gender, PersonType } from '../domain/person';
 
+/** Wire contract of `/api/v1` shared by NET-Blueprint (Api, Minimal.Api) and Java-Blueprint. */
 export interface GetAddressResponse {
   id: string;
   street: string;
@@ -17,7 +18,12 @@ export interface GetPersonResponse {
   id: string;
   firstName: string;
   lastName: string;
-  birthday: string;
+  birthday: string | null;
+  gender: Gender | null;
+  description: string | null;
+  email: string | null;
+  phone: string | null;
+  type: PersonType | null;
   addresses: GetAddressResponse[] | null;
   createdId: string;
   createdDate: string;
@@ -38,7 +44,12 @@ export interface CreateAddressRequest {
 export interface CreatePersonRequest {
   firstName: string;
   lastName: string;
-  birthday: string;
+  birthday: string | null;
+  gender: Gender | null;
+  description: string | null;
+  email: string | null;
+  phone: string | null;
+  type: PersonType | null;
   createdId: string;
   createdDate: string;
   addresses: CreateAddressRequest[];
@@ -65,7 +76,12 @@ export interface UpdatePersonRequest {
   id: string;
   firstName: string;
   lastName: string;
-  birthday: string;
+  birthday: string | null;
+  gender: Gender | null;
+  description: string | null;
+  email: string | null;
+  phone: string | null;
+  type: PersonType | null;
   addresses: UpdateAddressRequest[];
   createdId: string;
   createdDate: string;
