@@ -1,5 +1,5 @@
 import { Person } from '../../domain/person';
-import { personMatchesFilter, personSortValue } from './person-table';
+import { PersonTableText, personMatchesFilter, personSortValue } from './person-table';
 
 const audit = {
   createdId: 'u',
@@ -25,7 +25,26 @@ const PERSON: Person = {
   ...audit,
 };
 
+const GERMAN: PersonTableText = {
+  typeLabel: (type) => ({ Freelancer: 'Freelancer', Employee: 'Angestellt' })[type],
+  date: (isoDate) => isoDate.split('-').reverse().join('.'),
+};
+
+const ENGLISH: PersonTableText = {
+  typeLabel: (type) => type,
+  date: (isoDate) => isoDate.split('-').reverse().join('/'),
+};
+
 describe('person-table', () => {
+  it.each(['employee', '12/04/1985'])('matches the English filter %p', (filter) => {
+    expect(personMatchesFilter(PERSON, filter, ENGLISH)).toBe(true);
+  });
+
+  it('sorts by the translated type', () => {
+    expect(personSortValue(PERSON, 'type', GERMAN)).toBe('angestellt');
+    expect(personSortValue(PERSON, 'type', ENGLISH)).toBe('employee');
+  });
+
   it.each([
     'jonas',
     'elias',
@@ -37,7 +56,7 @@ describe('person-table', () => {
     '+41 62',
     'angestellt',
   ])('matches filter %p', (filter) => {
-    expect(personMatchesFilter(PERSON, filter)).toBe(true);
+    expect(personMatchesFilter(PERSON, filter, GERMAN)).toBe(true);
   });
 
   it('matches a person without optional data', () => {
@@ -51,33 +70,33 @@ describe('person-table', () => {
       type: null,
     };
 
-    expect(personMatchesFilter(minimal, 'jonas')).toBe(true);
-    expect(personMatchesFilter(minimal, 'angestellt')).toBe(false);
+    expect(personMatchesFilter(minimal, 'jonas', GERMAN)).toBe(true);
+    expect(personMatchesFilter(minimal, 'angestellt', GERMAN)).toBe(false);
   });
 
   it('sorts persons without birthday before all others', () => {
-    expect(personSortValue({ ...PERSON, birthday: null }, 'birthday')).toBe('');
-    expect(personSortValue(PERSON, 'birthday')).toBe('1985-04-12');
+    expect(personSortValue({ ...PERSON, birthday: null }, 'birthday', GERMAN)).toBe('');
+    expect(personSortValue(PERSON, 'birthday', GERMAN)).toBe('1985-04-12');
   });
 
   it('does not match unrelated text', () => {
-    expect(personMatchesFilter(PERSON, 'bern')).toBe(false);
+    expect(personMatchesFilter(PERSON, 'bern', GERMAN)).toBe(false);
   });
 
   it('sorts names case-insensitively', () => {
-    expect(personSortValue(PERSON, 'lastName')).toBe('elias');
+    expect(personSortValue(PERSON, 'lastName', GERMAN)).toBe('elias');
   });
 
   it('offers no sorting by address count', () => {
-    expect(() => personSortValue(PERSON, 'addresses')).toThrow(
+    expect(() => personSortValue(PERSON, 'addresses', GERMAN)).toThrow(
       "Column 'addresses' is not sortable.",
     );
   });
 
   it('sorts by last change', () => {
-    expect(personSortValue({ ...PERSON, modifiedDate: '2026-05-01T00:00:00Z' }, 'changed')).toBe(
-      '2026-05-01T00:00:00Z',
-    );
-    expect(personSortValue(PERSON, 'changed')).toBe('2026-01-01T00:00:00Z');
+    expect(
+      personSortValue({ ...PERSON, modifiedDate: '2026-05-01T00:00:00Z' }, 'changed', GERMAN),
+    ).toBe('2026-05-01T00:00:00Z');
+    expect(personSortValue(PERSON, 'changed', GERMAN)).toBe('2026-01-01T00:00:00Z');
   });
 });

@@ -1,5 +1,5 @@
 <a mat-button routerLink="/persons" class="back-link">
-  <mat-icon>arrow_back</mat-icon> Alle Personen
+  <mat-icon>arrow_back</mat-icon> {{ 'persons.detail.back' | transloco }}
 </a>
 
 <div class="progress-slot">
@@ -13,12 +13,17 @@
     <div>
       <h1>{{ person.firstName }} {{ person.lastName }}</h1>
       @if (person.birthday) {
-        <p class="subtitle">Geboren am {{ person.birthday | date: 'dd.MM.yyyy' }}</p>
+        <p class="subtitle">
+          {{ 'persons.detail.bornOn' | transloco: { date: (person.birthday | localDate) } }}
+        </p>
       }
     </div>
-    <div class="header-actions" [matTooltip]="store.canWrite() ? '' : readOnlyHint">
+    <div
+      class="header-actions"
+      [matTooltip]="store.canWrite() ? '' : ('common.readOnlyHint' | transloco)"
+    >
       <button mat-stroked-button [disabled]="!store.canWrite()" (click)="editPerson(person)">
-        <mat-icon>edit</mat-icon> Bearbeiten
+        <mat-icon>edit</mat-icon> {{ 'common.edit' | transloco }}
       </button>
       <button
         mat-stroked-button
@@ -26,7 +31,7 @@
         [disabled]="!store.canWrite()"
         (click)="removePerson(person)"
       >
-        <mat-icon>delete</mat-icon> Löschen
+        <mat-icon>delete</mat-icon> {{ 'common.delete' | transloco }}
       </button>
     </div>
   </header>
@@ -35,36 +40,36 @@
     <mat-card-content>
       <dl class="meta">
         <div>
-          <dt>Geschlecht</dt>
-          <dd>{{ genderLabel(person.gender) }}</dd>
+          <dt>{{ 'person.gender' | transloco }}</dt>
+          <dd>{{ genderLabelKey(person.gender) | transloco }}</dd>
         </div>
         <div>
-          <dt>Typ</dt>
-          <dd>{{ personTypeLabel(person.type) }}</dd>
+          <dt>{{ 'person.type' | transloco }}</dt>
+          <dd>{{ personTypeLabelKey(person.type) | transloco }}</dd>
         </div>
         <div>
-          <dt>E-Mail</dt>
+          <dt>{{ 'person.email' | transloco }}</dt>
           <dd>
             @if (person.email) {
               <a [href]="'mailto:' + person.email">{{ person.email }}</a>
             } @else {
-              –
+              {{ 'common.notSet' | transloco }}
             }
           </dd>
         </div>
         <div>
-          <dt>Telefon</dt>
+          <dt>{{ 'person.phone' | transloco }}</dt>
           <dd>
             @if (person.phone) {
               <a [href]="'tel:' + person.phone">{{ person.phone }}</a>
             } @else {
-              –
+              {{ 'common.notSet' | transloco }}
             }
           </dd>
         </div>
         @if (person.description) {
           <div class="span-all">
-            <dt>Beschreibung</dt>
+            <dt>{{ 'person.description' | transloco }}</dt>
             <dd class="description">{{ person.description }}</dd>
           </div>
         }
@@ -76,13 +81,13 @@
     <mat-card-content>
       <dl class="meta">
         <div>
-          <dt>Erstellt</dt>
-          <dd>{{ person.createdDate | date: 'dd.MM.yyyy HH:mm' }}</dd>
+          <dt>{{ 'persons.detail.created' | transloco }}</dt>
+          <dd>{{ person.createdDate | localDate: 'dateTime' }}</dd>
         </div>
         <div>
-          <dt>Geändert</dt>
+          <dt>{{ 'persons.detail.modified' | transloco }}</dt>
           <dd>
-            {{ person.modifiedDate ? (person.modifiedDate | date: 'dd.MM.yyyy HH:mm') : '–' }}
+            {{ (person.modifiedDate | localDate: 'dateTime') || ('common.notSet' | transloco) }}
           </dd>
         </div>
       </dl>
@@ -91,10 +96,10 @@
 
   <section class="mat-elevation-z1 table-card">
     <div class="section-header">
-      <h2>Adressen</h2>
-      <span [matTooltip]="store.canWrite() ? '' : readOnlyHint">
+      <h2>{{ 'persons.detail.addresses' | transloco }}</h2>
+      <span [matTooltip]="store.canWrite() ? '' : ('common.readOnlyHint' | transloco)">
         <button mat-flat-button [disabled]="!store.canWrite()" (click)="addAddress(person)">
-          <mat-icon>add_location_alt</mat-icon> Adresse hinzufügen
+          <mat-icon>add_location_alt</mat-icon> {{ 'persons.detail.addAddress' | transloco }}
         </button>
       </span>
     </div>
@@ -102,24 +107,24 @@
     <div class="table-scroll">
       <table mat-table [dataSource]="person.addresses">
         <ng-container matColumnDef="street">
-          <th mat-header-cell *matHeaderCellDef>Strasse</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'address.street' | transloco }}</th>
           <td mat-cell *matCellDef="let address">{{ address.street }} {{ address.number }}</td>
         </ng-container>
 
         <ng-container matColumnDef="postalCode">
-          <th mat-header-cell *matHeaderCellDef>PLZ</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'address.postalCode' | transloco }}</th>
           <td mat-cell *matCellDef="let address">{{ address.postalCode }}</td>
         </ng-container>
 
         <ng-container matColumnDef="city">
-          <th mat-header-cell *matHeaderCellDef>Ort</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'address.city' | transloco }}</th>
           <td mat-cell *matCellDef="let address">{{ address.city }}</td>
         </ng-container>
 
         <ng-container matColumnDef="changed">
-          <th mat-header-cell *matHeaderCellDef>Letzte Änderung</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'common.lastChange' | transloco }}</th>
           <td mat-cell *matCellDef="let address">
-            {{ address.modifiedDate ?? address.createdDate | date: 'dd.MM.yyyy HH:mm' }}
+            {{ address.modifiedDate ?? address.createdDate | localDate: 'dateTime' }}
           </td>
         </ng-container>
 
@@ -128,8 +133,8 @@
           <td mat-cell *matCellDef="let address" class="actions-cell">
             <button
               mat-icon-button
-              matTooltip="Bearbeiten"
-              aria-label="Adresse bearbeiten"
+              [matTooltip]="'common.edit' | transloco"
+              [attr.aria-label]="'persons.detail.editAddress' | transloco"
               [disabled]="!store.canWrite()"
               (click)="editAddress(person, address)"
             >
@@ -137,8 +142,8 @@
             </button>
             <button
               mat-icon-button
-              matTooltip="Löschen"
-              aria-label="Adresse löschen"
+              [matTooltip]="'common.delete' | transloco"
+              [attr.aria-label]="'persons.detail.deleteAddress' | transloco"
               [disabled]="!store.canWrite()"
               (click)="removeAddress(person, address)"
             >
@@ -151,7 +156,7 @@
         <tr mat-row *matRowDef="let address; columns: addressColumns"></tr>
         <tr class="mat-mdc-row" *matNoDataRow>
           <td class="mat-mdc-cell empty-cell" [attr.colspan]="addressColumns.length">
-            Keine Adressen erfasst.
+            {{ 'persons.detail.noAddresses' | transloco }}
           </td>
         </tr>
       </table>
@@ -160,7 +165,7 @@
 } @else if (!store.loading()) {
   <section class="not-found">
     <mat-icon>person_off</mat-icon>
-    <p>Die Person wurde nicht gefunden.</p>
-    <a mat-flat-button routerLink="/persons">Zur Übersicht</a>
+    <p>{{ 'persons.detail.notFound' | transloco }}</p>
+    <a mat-flat-button routerLink="/persons">{{ 'persons.detail.toOverview' | transloco }}</a>
   </section>
 }

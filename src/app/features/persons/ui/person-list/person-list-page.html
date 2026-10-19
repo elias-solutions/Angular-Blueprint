@@ -1,15 +1,17 @@
 <header class="page-header">
   <div>
-    <h1>Personen</h1>
-    <p class="subtitle">{{ store.persons().length }} Personen erfasst</p>
+    <h1>{{ 'persons.list.title' | transloco }}</h1>
+    <p class="subtitle">
+      {{ 'persons.list.count' | transloco: { count: store.persons().length } }}
+    </p>
   </div>
   <div class="header-actions">
     <button mat-stroked-button (click)="reload()" [disabled]="store.loading()">
-      <mat-icon>refresh</mat-icon> Aktualisieren
+      <mat-icon>refresh</mat-icon> {{ 'persons.list.refresh' | transloco }}
     </button>
-    <span [matTooltip]="store.canWrite() ? '' : 'Das aktive Backend ist schreibgeschützt.'">
+    <span [matTooltip]="store.canWrite() ? '' : ('common.readOnlyHint' | transloco)">
       <button mat-flat-button (click)="create()" [disabled]="!store.canWrite()">
-        <mat-icon>person_add</mat-icon> Neue Person
+        <mat-icon>person_add</mat-icon> {{ 'persons.list.newPerson' | transloco }}
       </button>
     </span>
   </div>
@@ -18,10 +20,15 @@
 <section class="mat-elevation-z1 table-card">
   <mat-form-field class="filter" subscriptSizing="dynamic" appearance="outline">
     <mat-icon matPrefix>search</mat-icon>
-    <mat-label>Suchen (Name, Geburtsdatum, Typ, Kontakt, Adresse)</mat-label>
+    <mat-label>{{ 'persons.list.search' | transloco }}</mat-label>
     <input matInput #search [value]="filter()" (input)="filter.set(search.value)" />
     @if (filter()) {
-      <button matIconSuffix mat-icon-button aria-label="Suche leeren" (click)="filter.set('')">
+      <button
+        matIconSuffix
+        mat-icon-button
+        [attr.aria-label]="'persons.list.clearSearch' | transloco"
+        (click)="filter.set('')"
+      >
         <mat-icon>close</mat-icon>
       </button>
     }
@@ -42,33 +49,41 @@
       matSortDirection="asc"
     >
       <ng-container matColumnDef="lastName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Nachname</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'person.lastName' | transloco }}
+        </th>
         <td mat-cell *matCellDef="let person">{{ person.lastName }}</td>
       </ng-container>
 
       <ng-container matColumnDef="firstName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Vorname</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'person.firstName' | transloco }}
+        </th>
         <td mat-cell *matCellDef="let person">{{ person.firstName }}</td>
       </ng-container>
 
       <ng-container matColumnDef="birthday">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Geburtsdatum</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'person.birthday' | transloco }}
+        </th>
         <td mat-cell *matCellDef="let person">
-          {{ person.birthday ? (person.birthday | date: 'dd.MM.yyyy') : '–' }}
+          {{ (person.birthday | localDate) || ('common.notSet' | transloco) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Typ</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'person.type' | transloco }}</th>
         <td mat-cell *matCellDef="let person">
-          {{ personTypeLabel(person.type) }}
+          {{ personTypeLabelKey(person.type) | transloco }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="changed">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Letzte Änderung</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ 'common.lastChange' | transloco }}
+        </th>
         <td mat-cell *matCellDef="let person">
-          {{ person.modifiedDate ?? person.createdDate | date: 'dd.MM.yyyy HH:mm' }}
+          {{ person.modifiedDate ?? person.createdDate | localDate: 'dateTime' }}
         </td>
       </ng-container>
 
@@ -82,8 +97,8 @@
         >
           <button
             mat-icon-button
-            matTooltip="Bearbeiten"
-            aria-label="Bearbeiten"
+            [matTooltip]="'common.edit' | transloco"
+            [attr.aria-label]="'common.edit' | transloco"
             [disabled]="!store.canWrite()"
             (click)="edit(person)"
           >
@@ -91,8 +106,8 @@
           </button>
           <button
             mat-icon-button
-            matTooltip="Löschen"
-            aria-label="Löschen"
+            [matTooltip]="'common.delete' | transloco"
+            [attr.aria-label]="'common.delete' | transloco"
             [disabled]="!store.canWrite()"
             (click)="remove(person)"
           >
@@ -111,16 +126,20 @@
       <tr class="mat-mdc-row" *matNoDataRow>
         <td class="mat-mdc-cell empty-cell" [attr.colspan]="columns.length">
           @if (store.loading()) {
-            Daten werden geladen …
+            {{ 'persons.list.loading' | transloco }}
           } @else if (filter()) {
-            Keine Person passt zu «{{ filter() }}».
+            {{ 'persons.list.noMatch' | transloco: { filter: filter() } }}
           } @else {
-            Noch keine Personen erfasst.
+            {{ 'persons.list.empty' | transloco }}
           }
         </td>
       </tr>
     </table>
   </div>
 
-  <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons aria-label="Seite wählen" />
+  <mat-paginator
+    [pageSizeOptions]="[10, 25, 50]"
+    showFirstLastButtons
+    [attr.aria-label]="'persons.list.selectPage' | transloco"
+  />
 </section>

@@ -1,72 +1,74 @@
-<h2 mat-dialog-title>{{ isEdit ? 'Person bearbeiten' : 'Neue Person' }}</h2>
+<h2 mat-dialog-title>
+  {{ (isEdit ? 'persons.dialog.editPerson' : 'persons.dialog.newPerson') | transloco }}
+</h2>
 
 <form [formGroup]="form" (ngSubmit)="save()" id="person-form">
   <mat-dialog-content>
     <div class="form-grid">
       <mat-form-field>
-        <mat-label>Vorname</mat-label>
+        <mat-label>{{ 'person.firstName' | transloco }}</mat-label>
         <input matInput formControlName="firstName" [maxlength]="maxLength" cdkFocusInitial />
         @if (form.controls.firstName.invalid) {
-          <mat-error>Vorname ist erforderlich.</mat-error>
+          <mat-error>{{ 'validation.firstNameRequired' | transloco }}</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Nachname</mat-label>
+        <mat-label>{{ 'person.lastName' | transloco }}</mat-label>
         <input matInput formControlName="lastName" [maxlength]="maxLength" />
         @if (form.controls.lastName.invalid) {
-          <mat-error>Nachname ist erforderlich.</mat-error>
+          <mat-error>{{ 'validation.lastNameRequired' | transloco }}</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Geburtsdatum</mat-label>
+        <mat-label>{{ 'person.birthday' | transloco }}</mat-label>
         <input matInput formControlName="birthday" [matDatepicker]="picker" [max]="today" />
-        <mat-hint>TT.MM.JJJJ (optional)</mat-hint>
+        <mat-hint>{{ 'common.dateHint' | transloco }}</mat-hint>
         <mat-datepicker-toggle matIconSuffix [for]="picker" />
         <mat-datepicker #picker startView="multi-year" />
         @if (form.controls.birthday.hasError('future')) {
-          <mat-error>Darf nicht in der Zukunft liegen.</mat-error>
+          <mat-error>{{ 'validation.birthdayInFuture' | transloco }}</mat-error>
         } @else if (form.controls.birthday.invalid) {
-          <mat-error>Ungültiges Geburtsdatum.</mat-error>
+          <mat-error>{{ 'validation.birthdayInvalid' | transloco }}</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Geschlecht</mat-label>
+        <mat-label>{{ 'person.gender' | transloco }}</mat-label>
         <mat-select formControlName="gender">
-          <mat-option [value]="null">–</mat-option>
+          <mat-option [value]="null">{{ genderLabelKey(null) | transloco }}</mat-option>
           @for (gender of genders; track gender) {
-            <mat-option [value]="gender">{{ genderLabels[gender] }}</mat-option>
+            <mat-option [value]="gender">{{ genderLabelKey(gender) | transloco }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>E-Mail</mat-label>
+        <mat-label>{{ 'person.email' | transloco }}</mat-label>
         <input matInput type="email" formControlName="email" [maxlength]="emailMaxLength" />
         @if (form.controls.email.invalid) {
-          <mat-error>Gültige E-Mail-Adresse erforderlich.</mat-error>
+          <mat-error>{{ 'validation.emailInvalid' | transloco }}</mat-error>
         }
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Telefon</mat-label>
+        <mat-label>{{ 'person.phone' | transloco }}</mat-label>
         <input matInput type="tel" formControlName="phone" [maxlength]="phoneMaxLength" />
       </mat-form-field>
 
       <mat-form-field>
-        <mat-label>Typ</mat-label>
+        <mat-label>{{ 'person.type' | transloco }}</mat-label>
         <mat-select formControlName="type">
-          <mat-option [value]="null">–</mat-option>
+          <mat-option [value]="null">{{ personTypeLabelKey(null) | transloco }}</mat-option>
           @for (type of personTypes; track type) {
-            <mat-option [value]="type">{{ personTypeLabels[type] }}</mat-option>
+            <mat-option [value]="type">{{ personTypeLabelKey(type) | transloco }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
 
       <mat-form-field class="span-2">
-        <mat-label>Beschreibung</mat-label>
+        <mat-label>{{ 'person.description' | transloco }}</mat-label>
         <textarea
           matInput
           formControlName="description"
@@ -81,7 +83,9 @@
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <button mat-button type="button" mat-dialog-close>Abbrechen</button>
-    <button mat-flat-button type="submit">{{ isEdit ? 'Speichern' : 'Erstellen' }}</button>
+    <button mat-button type="button" mat-dialog-close>{{ 'common.cancel' | transloco }}</button>
+    <button mat-flat-button type="submit">
+      {{ (isEdit ? 'common.save' : 'common.create') | transloco }}
+    </button>
   </mat-dialog-actions>
 </form>

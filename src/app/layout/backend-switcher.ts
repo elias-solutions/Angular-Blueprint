@@ -3,17 +3,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BackendSelection } from '../core/backend/backend-selection';
 import { PersonApiResolver } from '../features/persons/data/person-api-resolver';
 
 @Component({
   selector: 'app-backend-switcher',
-  imports: [MatFormFieldModule, MatSelectModule, MatIconModule, MatTooltipModule],
+  imports: [MatFormFieldModule, MatSelectModule, MatIconModule, MatTooltipModule, TranslocoPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <mat-form-field subscriptSizing="dynamic" class="backend-field">
       <mat-icon matPrefix>dns</mat-icon>
-      <mat-label>Backend</mat-label>
+      <mat-label>{{ 'backend.label' | transloco }}</mat-label>
       <mat-select
         [value]="selection.active().id"
         (selectionChange)="selection.select($event.value)"
@@ -24,9 +25,7 @@ import { PersonApiResolver } from '../features/persons/data/person-api-resolver'
       </mat-select>
     </mat-form-field>
     @if (!resolver.api().capabilities.write) {
-      <mat-icon class="read-only" matTooltip="Dieses Backend bietet nur Lesezugriff."
-        >lock</mat-icon
-      >
+      <mat-icon class="read-only" [matTooltip]="'backend.readOnly' | transloco">lock</mat-icon>
     }
   `,
   styles: `

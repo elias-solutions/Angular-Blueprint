@@ -1,5 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { provideSwissDates } from '../../../shared/date/swiss-date-adapter';
+import { LanguageService } from '../../../i18n/language.service';
+import { translocoTesting } from '../../../i18n/testing/transloco-testing';
+import { provideLocalizedDates } from '../../../shared/date/localized-date-adapter';
 import { DIALOG_PANEL_CLASS, DIALOG_WIDTH } from '../../../shared/dialog/app-dialog';
 import { Person } from '../domain/person';
 import { PersonDialogs } from './person-dialogs';
@@ -24,7 +26,12 @@ const PERSON: Person = {
 
 describe('PersonDialogs', () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [provideSwissDates()] });
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      imports: [translocoTesting()],
+      providers: [provideLocalizedDates()],
+    });
+    TestBed.inject(LanguageService);
   });
 
   afterEach(() => document.querySelector('.cdk-overlay-container')?.remove());
@@ -33,7 +40,7 @@ describe('PersonDialogs', () => {
     const dialogs = TestBed.inject(PersonDialogs);
     void dialogs.editPerson();
     void dialogs.editAddress();
-    void dialogs.confirm({ title: 'Löschen?', message: 'Sicher?', confirmLabel: 'Löschen' });
+    void dialogs.confirmDeletePerson(PERSON);
     TestBed.tick();
 
     const panes = Array.from(document.querySelectorAll<HTMLElement>('.cdk-overlay-pane'));
@@ -44,6 +51,43 @@ describe('PersonDialogs', () => {
       DIALOG_WIDTH,
     ]);
     expect(panes.every((pane) => pane.classList.contains(DIALOG_PANEL_CLASS))).toBe(true);
+  });
+
+  it('asks before deleting a person, in the active language', () => {
+    TestBed.inject(LanguageService).select('en');
+    void TestBed.inject(PersonDialogs).confirmDeletePerson(PERSON);
+    TestBed.tick();
+
+    const dialog = document.querySelector('app-confirm-dialog');
+    const buttons = Array.from(dialog?.querySelectorAll('button') ?? []).map((button) =>
+      button.textContent?.trim(),
+    );
+    expect(dialog?.querySelector('h2')?.textContent).toContain('Delete person');
+    expect(dialog?.textContent).toContain(
+      'Permanently delete Jonas Elias including all addresses?',
+    );
+    expect(buttons).toEqual(['Cancel', 'Delete']);
+  });
+
+  it('names the address to delete', () => {
+    const address = {
+      id: 'a1',
+      street: 'Hauptstrasse',
+      number: '1',
+      city: 'Olten',
+      postalCode: '4600',
+      createdId: 'u',
+      createdDate: '2026-01-01T00:00:00Z',
+      modifiedId: null,
+      modifiedDate: null,
+      version: 'v',
+    };
+    void TestBed.inject(PersonDialogs).confirmDeleteAddress(address);
+    TestBed.tick();
+
+    const dialog = document.querySelector('app-confirm-dialog');
+    expect(dialog?.querySelector('h2')?.textContent).toContain('Adresse löschen');
+    expect(dialog?.textContent).toContain('Hauptstrasse 1, 4600 Olten löschen?');
   });
 
   it('opens the person form for a new person', () => {
@@ -115,5 +159,40 @@ describe('PersonDialogs', () => {
 
     const inputs = document.querySelectorAll<HTMLInputElement>('app-person-dialog input');
     expect(inputs[2].value).toBe('');
+  });
+
+  it('shows the person form in English with English dates', () => {
+    TestBed.inject(LanguageService).select('en');
+    void TestBed.inject(PersonDialogs).editPerson(PERSON);
+    TestBed.tick();
+
+    const dialog = document.querySelector('app-person-dialog');
+    const labels = Array.from(dialog?.querySelectorAll('mat-label') ?? []).map((label) =>
+      label.textContent?.trim(),
+    );
+    const inputs = document.querySelectorAll<HTMLInputElement>('app-person-dialog input');
+    expect(dialog?.querySelector('h2')?.textContent).toContain('Edit person');
+    expect(labels).toEqual([
+      'First name',
+      'Last name',
+      'Date of birth',
+      'Gender',
+      'Email',
+      'Phone',
+      'Type',
+      'Description',
+    ]);
+    expect(inputs[2].value).toBe('02/04/1985');
+  });
+
+  it('shows the address form in English', () => {
+    TestBed.inject(LanguageService).select('en');
+    void TestBed.inject(PersonDialogs).editAddress();
+    TestBed.tick();
+
+    const labels = Array.from(document.querySelectorAll('app-address-dialog mat-label')).map(
+      (label) => label.textContent?.trim(),
+    );
+    expect(labels).toEqual(['Street', 'No.', 'Postcode', 'City']);
   });
 });

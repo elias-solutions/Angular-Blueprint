@@ -1,4 +1,5 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
 import { Observable, firstValueFrom } from 'rxjs';
 import { ApiErrorMapper } from '../../../core/http/api-error-mapper';
 import { NotificationService } from '../../../core/notification/notification.service';
@@ -11,6 +12,7 @@ export class PersonsStore {
   private readonly resolver = inject(PersonApiResolver);
   private readonly notifications = inject(NotificationService);
   private readonly errors = inject(ApiErrorMapper);
+  private readonly transloco = inject(TranslocoService);
 
   private readonly personsState = signal<readonly Person[]>([]);
   private readonly selectedState = signal<Person | null>(null);
@@ -39,7 +41,7 @@ export class PersonsStore {
     if (!result.ok) {
       return null;
     }
-    this.notifications.success(`${fullName(draft)} wurde erstellt.`);
+    this.notify('created', fullName(draft));
     await this.load();
     return result.value;
   }
@@ -47,7 +49,7 @@ export class PersonsStore {
   async update(original: Person, draft: PersonDraft): Promise<boolean> {
     const { ok } = await this.run(this.api().update(original, draft));
     if (ok) {
-      this.notifications.success(`${fullName(draft)} wurde gespeichert.`);
+      this.notify('saved', fullName(draft));
       await this.refresh(original.id);
     }
     return ok;
@@ -56,7 +58,7 @@ export class PersonsStore {
   async remove(person: Person): Promise<boolean> {
     const { ok } = await this.run(this.api().delete(person.id));
     if (ok) {
-      this.notifications.success(`${fullName(person)} wurde gelöscht.`);
+      this.notify('deleted', fullName(person));
       this.personsState.update((persons) => persons.filter((p) => p.id !== person.id));
       if (this.selectedState()?.id === person.id) {
         this.selectedState.set(null);
@@ -79,6 +81,12 @@ export class PersonsStore {
 
   private api() {
     return this.activeApi();
+  }
+
+  private notify(outcome: 'created' | 'saved' | 'deleted', name: string): void {
+    this.notifications.success(
+      this.transloco.translate(`persons.notifications.${outcome}`, { name }),
+    );
   }
 
   /** Runs a backend call, reporting failures to the user instead of rethrowing them. */

@@ -1,8 +1,17 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { TranslocoService } from '@jsverse/transloco';
+import { translocoTesting } from '../../i18n/testing/transloco-testing';
 import { ApiErrorMapper } from './api-error-mapper';
 
 describe('ApiErrorMapper', () => {
-  const mapper = new ApiErrorMapper();
+  let mapper: ApiErrorMapper;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ imports: [translocoTesting()] });
+    mapper = TestBed.inject(ApiErrorMapper);
+  });
+
   const httpError = (status: number, error: unknown = null) =>
     new HttpErrorResponse({ status, error, url: '/api/v1/persons' });
 
@@ -47,5 +56,12 @@ describe('ApiErrorMapper', () => {
 
   it('falls back to the status for unknown bodies', () => {
     expect(mapper.toMessage(httpError(500, '<html>'))).toBe('Serverfehler (HTTP 500).');
+  });
+
+  it('reports its own messages in the active language', () => {
+    TestBed.inject(TranslocoService).setActiveLang('en');
+
+    expect(mapper.toMessage(httpError(0))).toBe('Backend not reachable.');
+    expect(mapper.toMessage(httpError(500, '<html>'))).toBe('Server error (HTTP 500).');
   });
 });

@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { notBlank } from '../../../../shared/validation/form-validators';
 import { AddressDraft } from '../../domain/person';
 import { TEXT_MAX_LENGTH } from '../field-limits';
@@ -21,6 +22,7 @@ export interface AddressDialogData {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    TranslocoPipe,
   ],
   templateUrl: './address-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

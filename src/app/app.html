@@ -1,9 +1,10 @@
 <mat-toolbar class="app-toolbar">
   <a routerLink="/persons" class="brand">
     <mat-icon>groups</mat-icon>
-    <span>Personenverwaltung</span>
+    <span>{{ 'app.title' | transloco }}</span>
   </a>
   <span class="spacer"></span>
+  <app-language-switcher />
   <app-backend-switcher />
 </mat-toolbar>
 

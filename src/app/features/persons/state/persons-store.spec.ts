@@ -2,7 +2,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
+import { TranslocoService } from '@jsverse/transloco';
 import { NotificationService } from '../../../core/notification/notification.service';
+import { translocoTesting } from '../../../i18n/testing/transloco-testing';
 import { Person, PersonDraft } from '../domain/person';
 import { PersonApi } from '../data/person-api';
 import { PersonApiResolver } from '../data/person-api-resolver';
@@ -68,6 +70,7 @@ describe('PersonsStore', () => {
     api = new FakePersonApi();
     notifications = { success: jest.fn(), error: jest.fn() };
     TestBed.configureTestingModule({
+      imports: [translocoTesting()],
       providers: [
         PersonsStore,
         { provide: PersonApiResolver, useValue: { api: signal(api) } },
@@ -139,5 +142,13 @@ describe('PersonsStore', () => {
     expect(ok).toBe(true);
     expect(store.persons()).toEqual([]);
     expect(notifications.success).toHaveBeenCalledWith('Jonas Elias wurde gelöscht.');
+  });
+
+  it('reports outcomes in the active language', async () => {
+    TestBed.inject(TranslocoService).setActiveLang('en');
+
+    await store.create(DRAFT);
+
+    expect(notifications.success).toHaveBeenCalledWith('Anna Muster was created.');
   });
 });

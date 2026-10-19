@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,16 +17,20 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { Person, fullName, toPersonDraft } from '../../domain/person';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../../i18n/language.service';
+import { LocalizedDatePipe, formatIsoDate } from '../../../../i18n/localized-date.pipe';
+import { Person, toPersonDraft } from '../../domain/person';
 import { PersonsStore } from '../../state/persons-store';
 import { PersonDialogs } from '../person-dialogs';
-import { personTypeLabel } from '../person-labels';
-import { personMatchesFilter, personSortValue } from './person-table';
+import { personTypeLabelKey } from '../person-labels';
+import { PersonTableText, personMatchesFilter, personSortValue } from './person-table';
 
 @Component({
   selector: 'app-person-list-page',
   imports: [
-    DatePipe,
+    TranslocoPipe,
+    LocalizedDatePipe,
     MatTableModule,
     MatSortModule,
     MatPaginatorModule,
@@ -46,17 +49,26 @@ export class PersonListPage {
   protected readonly store = inject(PersonsStore);
   private readonly dialogs = inject(PersonDialogs);
   private readonly router = inject(Router);
+  private readonly transloco = inject(TranslocoService);
+  private readonly language = inject(LanguageService);
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
   protected readonly columns = ['lastName', 'firstName', 'birthday', 'type', 'changed', 'actions'];
-  protected readonly personTypeLabel = personTypeLabel;
+  protected readonly personTypeLabelKey = personTypeLabelKey;
   protected readonly dataSource = new MatTableDataSource<Person>([]);
   protected readonly filter = signal('');
 
+  private readonly tableText: PersonTableText = {
+    typeLabel: (type) => this.transloco.translate(personTypeLabelKey(type)),
+    date: (isoDate) => formatIsoDate(isoDate, this.language.format()),
+  };
+
   constructor() {
-    this.dataSource.filterPredicate = personMatchesFilter;
-    this.dataSource.sortingDataAccessor = personSortValue;
+    this.dataSource.filterPredicate = (person, filter) =>
+      personMatchesFilter(person, filter, this.tableText);
+    this.dataSource.sortingDataAccessor = (person, column) =>
+      personSortValue(person, column, this.tableText);
 
     effect(() => {
       this.store.activeApi();
@@ -97,12 +109,7 @@ export class PersonListPage {
   }
 
   protected async remove(person: Person): Promise<void> {
-    const confirmed = await this.dialogs.confirm({
-      title: 'Person löschen',
-      message: `${fullName(person)} inklusive aller Adressen endgültig löschen?`,
-      confirmLabel: 'Löschen',
-    });
-    if (confirmed) {
+    if (await this.dialogs.confirmDeletePerson(person)) {
       await this.store.remove(person);
     }
   }

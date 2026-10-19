@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,7 +14,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink } from '@angular/router';
-import { Address, Person, fullName, toAddressDraft, toPersonDraft } from '../../domain/person';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { LocalizedDatePipe } from '../../../../i18n/localized-date.pipe';
+import { Address, Person, toAddressDraft, toPersonDraft } from '../../domain/person';
 import {
   withAddressAdded,
   withAddressRemoved,
@@ -23,12 +24,13 @@ import {
 } from '../../domain/person-addresses';
 import { PersonsStore } from '../../state/persons-store';
 import { PersonDialogs } from '../person-dialogs';
-import { genderLabel, personTypeLabel } from '../person-labels';
+import { genderLabelKey, personTypeLabelKey } from '../person-labels';
 
 @Component({
   selector: 'app-person-detail-page',
   imports: [
-    DatePipe,
+    TranslocoPipe,
+    LocalizedDatePipe,
     RouterLink,
     MatCardModule,
     MatTableModule,
@@ -54,9 +56,8 @@ export class PersonDetailPage {
     return selected?.id === this.id() ? selected : null;
   });
   protected readonly addressColumns = ['street', 'postalCode', 'city', 'changed', 'actions'];
-  protected readonly readOnlyHint = 'Das aktive Backend ist schreibgeschützt.';
-  protected readonly genderLabel = genderLabel;
-  protected readonly personTypeLabel = personTypeLabel;
+  protected readonly genderLabelKey = genderLabelKey;
+  protected readonly personTypeLabelKey = personTypeLabelKey;
 
   constructor() {
     effect(() => {
@@ -74,12 +75,7 @@ export class PersonDetailPage {
   }
 
   protected async removePerson(person: Person): Promise<void> {
-    const confirmed = await this.dialogs.confirm({
-      title: 'Person löschen',
-      message: `${fullName(person)} inklusive aller Adressen endgültig löschen?`,
-      confirmLabel: 'Löschen',
-    });
-    if (confirmed && (await this.store.remove(person))) {
+    if ((await this.dialogs.confirmDeletePerson(person)) && (await this.store.remove(person))) {
       void this.router.navigate(['/persons']);
     }
   }
@@ -102,12 +98,7 @@ export class PersonDetailPage {
   }
 
   protected async removeAddress(person: Person, address: Address): Promise<void> {
-    const confirmed = await this.dialogs.confirm({
-      title: 'Adresse löschen',
-      message: `${address.street} ${address.number}, ${address.postalCode} ${address.city} löschen?`,
-      confirmLabel: 'Löschen',
-    });
-    if (confirmed) {
+    if (await this.dialogs.confirmDeleteAddress(address)) {
       await this.store.update(person, withAddressRemoved(toPersonDraft(person), address.id));
     }
   }

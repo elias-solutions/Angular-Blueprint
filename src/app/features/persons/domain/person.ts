@@ -86,3 +86,8 @@ export function toAddressDraft(address: Address): AddressDraft {
 export function fullName(person: Pick<Person, 'firstName' | 'lastName'>): string {
   return `${person.firstName} ${person.lastName}`;
 }
+
+/** Single-line postal form, e.g. `Hauptstrasse 1, 4600 Olten`. */
+export function addressLine(address: Omit<AddressDraft, 'id'>): string {
+  return `${address.street} ${address.number}, ${address.postalCode} ${address.city}`;
+}

@@ -1,0 +1,123 @@
+export const de = {
+  app: {
+    title: 'Personenverwaltung',
+    language: 'Sprache',
+  },
+  backend: {
+    label: 'Backend',
+    readOnly: 'Dieses Backend bietet nur Lesezugriff.',
+  },
+  common: {
+    notSet: '–',
+    cancel: 'Abbrechen',
+    save: 'Speichern',
+    create: 'Erstellen',
+    add: 'Hinzufügen',
+    edit: 'Bearbeiten',
+    delete: 'Löschen',
+    close: 'Schliessen',
+    lastChange: 'Letzte Änderung',
+    readOnlyHint: 'Das aktive Backend ist schreibgeschützt.',
+    dateHint: 'TT.MM.JJJJ (optional)',
+  },
+  errors: {
+    unknown: 'Unbekannter Fehler.',
+    unreachable: 'Backend nicht erreichbar.',
+    rateLimited: 'Zu viele Anfragen – bitte einen Moment warten.',
+    server: 'Serverfehler (HTTP {{status}}).',
+  },
+  validation: {
+    required: 'Erforderlich.',
+    firstNameRequired: 'Vorname ist erforderlich.',
+    lastNameRequired: 'Nachname ist erforderlich.',
+    birthdayInFuture: 'Darf nicht in der Zukunft liegen.',
+    birthdayInvalid: 'Ungültiges Geburtsdatum.',
+    emailInvalid: 'Gültige E-Mail-Adresse erforderlich.',
+    streetRequired: 'Strasse ist erforderlich.',
+    cityRequired: 'Ort ist erforderlich.',
+  },
+  person: {
+    firstName: 'Vorname',
+    lastName: 'Nachname',
+    birthday: 'Geburtsdatum',
+    gender: 'Geschlecht',
+    type: 'Typ',
+    email: 'E-Mail',
+    phone: 'Telefon',
+    description: 'Beschreibung',
+    genders: {
+      Male: 'Männlich',
+      Female: 'Weiblich',
+    },
+    types: {
+      Freelancer: 'Freelancer',
+      Employee: 'Angestellt',
+    },
+  },
+  address: {
+    street: 'Strasse',
+    number: 'Nr.',
+    postalCode: 'PLZ',
+    city: 'Ort',
+  },
+  persons: {
+    list: {
+      title: 'Personen',
+      count: '{{count}} Personen erfasst',
+      refresh: 'Aktualisieren',
+      newPerson: 'Neue Person',
+      search: 'Suchen (Name, Geburtsdatum, Typ, Kontakt, Adresse)',
+      clearSearch: 'Suche leeren',
+      loading: 'Daten werden geladen …',
+      noMatch: 'Keine Person passt zu «{{filter}}».',
+      empty: 'Noch keine Personen erfasst.',
+      selectPage: 'Seite wählen',
+    },
+    detail: {
+      back: 'Alle Personen',
+      bornOn: 'Geboren am {{date}}',
+      created: 'Erstellt',
+      modified: 'Geändert',
+      addresses: 'Adressen',
+      addAddress: 'Adresse hinzufügen',
+      editAddress: 'Adresse bearbeiten',
+      deleteAddress: 'Adresse löschen',
+      noAddresses: 'Keine Adressen erfasst.',
+      notFound: 'Die Person wurde nicht gefunden.',
+      toOverview: 'Zur Übersicht',
+    },
+    dialog: {
+      newPerson: 'Neue Person',
+      editPerson: 'Person bearbeiten',
+      newAddress: 'Neue Adresse',
+      editAddress: 'Adresse bearbeiten',
+    },
+    confirm: {
+      deletePersonTitle: 'Person löschen',
+      deletePersonMessage: '{{name}} inklusive aller Adressen endgültig löschen?',
+      deleteAddressTitle: 'Adresse löschen',
+      deleteAddressMessage: '{{address}} löschen?',
+    },
+    notifications: {
+      created: '{{name}} wurde erstellt.',
+      saved: '{{name}} wurde gespeichert.',
+      deleted: '{{name}} wurde gelöscht.',
+    },
+  },
+  paginator: {
+    itemsPerPage: 'Einträge pro Seite',
+    firstPage: 'Erste Seite',
+    lastPage: 'Letzte Seite',
+    nextPage: 'Nächste Seite',
+    previousPage: 'Vorherige Seite',
+    range: '{{start}} – {{end}} von {{length}}',
+    emptyRange: '0 von {{length}}',
+  },
+};
+
+/** Same keys as `de`, every leaf a string – other languages are checked against it at compile time. */
+export type Translations = TranslationShape<typeof de>;
+
+type TranslationShape<T> = {
+  readonly [K in keyof T]: T[K] extends string ? string : TranslationShape<T[K]>;
+};

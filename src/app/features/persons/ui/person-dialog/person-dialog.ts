@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { parseIsoDate, toIsoDate } from '../../../../shared/date/iso-date';
 import { notBlank, notInFuture } from '../../../../shared/validation/form-validators';
 import {
@@ -22,7 +23,7 @@ import {
   PHONE_MAX_LENGTH,
   TEXT_MAX_LENGTH,
 } from '../field-limits';
-import { GENDER_LABELS, PERSON_TYPE_LABELS } from '../person-labels';
+import { genderLabelKey, personTypeLabelKey } from '../person-labels';
 
 export interface PersonDialogData {
   /** Absent when creating a new person. */
@@ -41,6 +42,7 @@ export type PersonDialogResult = PersonProfile;
     MatInputModule,
     MatDatepickerModule,
     MatSelectModule,
+    TranslocoPipe,
   ],
   templateUrl: './person-dialog.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,9 +57,9 @@ export class PersonDialog {
   protected readonly emailMaxLength = EMAIL_MAX_LENGTH;
   protected readonly phoneMaxLength = PHONE_MAX_LENGTH;
   protected readonly genders = GENDERS;
-  protected readonly genderLabels = GENDER_LABELS;
+  protected readonly genderLabelKey = genderLabelKey;
   protected readonly personTypes = PERSON_TYPES;
-  protected readonly personTypeLabels = PERSON_TYPE_LABELS;
+  protected readonly personTypeLabelKey = personTypeLabelKey;
   protected readonly today = new Date();
   protected readonly isEdit = this.person !== undefined;
   protected readonly form = this.fb.group({

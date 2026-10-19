@@ -1,6 +1,9 @@
 import { computed, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { LanguageService } from '../../../../i18n/language.service';
+import { translocoTesting } from '../../../../i18n/testing/transloco-testing';
+import { provideLocalizedDates } from '../../../../shared/date/localized-date-adapter';
 import { Person } from '../../domain/person';
 import { PersonsStore } from '../../state/persons-store';
 import { PersonDetailPage } from './person-detail-page';
@@ -39,9 +42,12 @@ const PERSON: Person = {
 describe('PersonDetailPage', () => {
   beforeEach(() => {
     const api = signal({ capabilities: { write: true } });
+    localStorage.clear();
     TestBed.configureTestingModule({
+      imports: [translocoTesting()],
       providers: [
         provideRouter([]),
+        provideLocalizedDates(),
         {
           provide: PersonsStore,
           useValue: {
@@ -68,5 +74,18 @@ describe('PersonDetailPage', () => {
     expect(text).not.toContain(PERSON.version);
     expect(text).not.toContain(PERSON.addresses[0].id);
     expect(text).not.toContain(PERSON.addresses[0].version);
+  });
+
+  it('renders labels and dates in the active language', async () => {
+    TestBed.inject(LanguageService).select('en');
+    const fixture = TestBed.createComponent(PersonDetailPage);
+    fixture.componentRef.setInput('id', PERSON.id);
+    await fixture.whenStable();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('Born on 12/04/1985');
+    expect(text).toContain('Gender');
+    expect(text).toContain('Employee');
+    expect(text).toContain('Addresses');
   });
 });

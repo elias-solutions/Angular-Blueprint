@@ -1,21 +1,13 @@
 import { Gender, PersonType } from '../domain/person';
 
-const NOT_SET = '–';
+const NOT_SET_KEY = 'common.notSet';
 
-export const GENDER_LABELS: Readonly<Record<Gender, string>> = {
-  Male: 'Männlich',
-  Female: 'Weiblich',
-};
-
-export const PERSON_TYPE_LABELS: Readonly<Record<PersonType, string>> = {
-  Freelancer: 'Freelancer',
-  Employee: 'Angestellt',
-};
-
-export function genderLabel(gender: Gender | null): string {
-  return gender ? GENDER_LABELS[gender] : NOT_SET;
+/** Translation key of a gender, or of the "not set" placeholder. */
+export function genderLabelKey(gender: Gender | null): string {
+  return gender ? `person.genders.${gender}` : NOT_SET_KEY;
 }
 
-export function personTypeLabel(type: PersonType | null): string {
-  return type ? PERSON_TYPE_LABELS[type] : NOT_SET;
+/** Translation key of a person type, or of the "not set" placeholder. */
+export function personTypeLabelKey(type: PersonType | null): string {
+  return type ? `person.types.${type}` : NOT_SET_KEY;
 }
