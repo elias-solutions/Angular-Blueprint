@@ -3,6 +3,10 @@ export const de = {
     title: 'Personenverwaltung',
     language: 'Sprache',
   },
+  auth: {
+    signedInAs: 'Angemeldet als {{name}}',
+    logout: 'Abmelden',
+  },
   backend: {
     label: 'Backend',
     readOnly: 'Dieses Backend bietet nur Lesezugriff.',
@@ -18,11 +22,14 @@ export const de = {
     close: 'Schliessen',
     lastChange: 'Letzte Änderung',
     readOnlyHint: 'Das aktive Backend ist schreibgeschützt.',
+    adminOnlyHint: 'Nur Administratoren dürfen Änderungen vornehmen.',
     dateHint: 'TT.MM.JJJJ (optional)',
   },
   errors: {
     unknown: 'Unbekannter Fehler.',
     unreachable: 'Backend nicht erreichbar.',
+    unauthorized: 'Sitzung abgelaufen – bitte neu anmelden.',
+    forbidden: 'Keine Berechtigung für diese Aktion.',
     rateLimited: 'Zu viele Anfragen – bitte einen Moment warten.',
     server: 'Serverfehler (HTTP {{status}}).',
   },

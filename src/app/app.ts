@@ -5,6 +5,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { BackendSwitcher } from './layout/backend-switcher';
 import { LanguageSwitcher } from './layout/language-switcher';
+import { UserMenu } from './layout/user-menu';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { LanguageSwitcher } from './layout/language-switcher';
     TranslocoPipe,
     BackendSwitcher,
     LanguageSwitcher,
+    UserMenu,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',

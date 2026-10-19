@@ -3,6 +3,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { TranslocoService } from '@jsverse/transloco';
+import { AuthSession } from '../../../core/auth/auth-session';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { translocoTesting } from '../../../i18n/testing/transloco-testing';
 import { Person, PersonDraft } from '../domain/person';
@@ -65,16 +66,19 @@ describe('PersonsStore', () => {
   let api: FakePersonApi;
   let store: PersonsStore;
   let notifications: { success: jest.Mock; error: jest.Mock };
+  let isAdmin: ReturnType<typeof signal<boolean>>;
 
   beforeEach(() => {
     api = new FakePersonApi();
     notifications = { success: jest.fn(), error: jest.fn() };
+    isAdmin = signal(true);
     TestBed.configureTestingModule({
       imports: [translocoTesting()],
       providers: [
         PersonsStore,
         { provide: PersonApiResolver, useValue: { api: signal(api) } },
         { provide: NotificationService, useValue: notifications },
+        { provide: AuthSession, useValue: { isAdmin } },
       ],
     });
     store = TestBed.inject(PersonsStore);
@@ -150,5 +154,16 @@ describe('PersonsStore', () => {
     await store.create(DRAFT);
 
     expect(notifications.success).toHaveBeenCalledWith('Anna Muster was created.');
+  });
+
+  it('lets admins write', () => {
+    expect(store.canWrite()).toBe(true);
+  });
+
+  it('keeps standard users read-only and says why', () => {
+    isAdmin.set(false);
+
+    expect(store.canWrite()).toBe(false);
+    expect(store.readOnlyHint()).toBe('common.adminOnlyHint');
   });
 });

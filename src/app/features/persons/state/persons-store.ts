@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { Observable, firstValueFrom } from 'rxjs';
+import { AuthSession } from '../../../core/auth/auth-session';
 import { ApiErrorMapper } from '../../../core/http/api-error-mapper';
 import { NotificationService } from '../../../core/notification/notification.service';
 import { Person, PersonDraft, fullName } from '../domain/person';
@@ -13,6 +14,7 @@ export class PersonsStore {
   private readonly notifications = inject(NotificationService);
   private readonly errors = inject(ApiErrorMapper);
   private readonly transloco = inject(TranslocoService);
+  private readonly auth = inject(AuthSession);
 
   private readonly personsState = signal<readonly Person[]>([]);
   private readonly selectedState = signal<Person | null>(null);
@@ -23,7 +25,11 @@ export class PersonsStore {
   readonly loading = computed(() => this.pending() > 0);
   /** Changes whenever the user switches backends; pages reload on it. */
   readonly activeApi = this.resolver.api;
-  readonly canWrite = computed(() => this.activeApi().capabilities.write);
+  readonly canWrite = computed(() => this.activeApi().capabilities.write && this.auth.isAdmin());
+  /** Translation key explaining why writing is disabled. */
+  readonly readOnlyHint = computed(() =>
+    this.auth.isAdmin() ? 'common.readOnlyHint' : 'common.adminOnlyHint',
+  );
 
   async load(): Promise<void> {
     const result = await this.run(this.api().getAll());

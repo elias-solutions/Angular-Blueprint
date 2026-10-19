@@ -25,6 +25,13 @@ describe('ApiErrorMapper', () => {
     );
   });
 
+  it.each([
+    [401, 'Sitzung abgelaufen – bitte neu anmelden.'],
+    [403, 'Keine Berechtigung für diese Aktion.'],
+  ])('explains authentication failures for status %s', (status, message) => {
+    expect(mapper.toMessage(httpError(status))).toBe(message);
+  });
+
   it('prefers the problem details detail over the title', () => {
     const error = httpError(400, {
       title: 'BadRequest - Entity version conflict',

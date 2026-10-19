@@ -10,6 +10,10 @@ interface ProblemBody {
 }
 
 const RATE_LIMIT_STATUSES = [429, 503];
+const STATUS_MESSAGE_KEYS: Readonly<Record<number, string>> = {
+  401: 'errors.unauthorized',
+  403: 'errors.forbidden',
+};
 
 /** Turns any error raised by a backend call into a user-facing message in the active language. */
 @Injectable({ providedIn: 'root' })
@@ -32,6 +36,10 @@ export class ApiErrorMapper {
     }
     if (RATE_LIMIT_STATUSES.includes(error.status)) {
       return this.transloco.translate('errors.rateLimited');
+    }
+    const statusKey = STATUS_MESSAGE_KEYS[error.status];
+    if (statusKey) {
+      return this.transloco.translate(statusKey);
     }
     const problem = asProblem(error.error);
     const validationMessages = Object.values(problem?.errors ?? {}).flat();

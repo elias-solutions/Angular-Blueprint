@@ -9,7 +9,7 @@
     <button mat-stroked-button (click)="reload()" [disabled]="store.loading()">
       <mat-icon>refresh</mat-icon> {{ 'persons.list.refresh' | transloco }}
     </button>
-    <span [matTooltip]="store.canWrite() ? '' : ('common.readOnlyHint' | transloco)">
+    <span [matTooltip]="store.canWrite() ? '' : (store.readOnlyHint() | transloco)">
       <button mat-flat-button (click)="create()" [disabled]="!store.canWrite()">
         <mat-icon>person_add</mat-icon> {{ 'persons.list.newPerson' | transloco }}
       </button>

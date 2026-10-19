@@ -13,9 +13,15 @@ export interface BackendConfig {
   readonly baseUrl: string;
 }
 
+/** Keycloak realm and public client the user signs in with. */
+export interface AuthConfig {
+  readonly url: string;
+  readonly realm: string;
+  readonly clientId: string;
+}
+
 export interface AppConfig {
-  /** User id sent as `createdId`/`modifiedId`; the blueprints take audit data from the client. */
-  readonly auditUserId: string;
+  readonly auth: AuthConfig;
   readonly defaultBackendId: string;
   readonly backends: readonly BackendConfig[];
 }

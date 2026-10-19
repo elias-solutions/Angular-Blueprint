@@ -1,4 +1,4 @@
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   inject,
@@ -7,20 +7,26 @@ import {
 } from '@angular/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { includeBearerTokenInterceptor } from 'keycloak-angular';
 
 import { routes } from './app.routes';
+import { provideAuth } from './core/auth/provide-auth';
+import { AppConfig } from './core/config/app-config';
 import { AppConfigStore } from './core/config/app-config-store';
 import { providePersonApis } from './features/persons/data/person-api.providers';
 import { provideI18n } from './i18n/provide-i18n';
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withFetch()),
-    provideAppInitializer(() => inject(AppConfigStore).load()),
-    providePersonApis(),
-    provideI18n(),
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
-  ],
-};
+export function createAppConfig(config: AppConfig): ApplicationConfig {
+  return {
+    providers: [
+      provideBrowserGlobalErrorListeners(),
+      provideRouter(routes, withComponentInputBinding()),
+      provideHttpClient(withFetch(), withInterceptors([includeBearerTokenInterceptor])),
+      provideAppInitializer(() => inject(AppConfigStore).use(config)),
+      provideAuth(config.auth),
+      providePersonApis(),
+      provideI18n(),
+      { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
+    ],
+  };
+}

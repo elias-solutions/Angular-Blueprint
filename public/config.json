@@ -1,5 +1,9 @@
 {
-  "auditUserId": "e3d3d338-2053-4ce9-877d-de4563fe321c",
+  "auth": {
+    "url": "http://localhost:8180",
+    "realm": "blueprint",
+    "clientId": "blueprint-angular"
+  },
   "defaultBackendId": "java",
   "backends": [
     {

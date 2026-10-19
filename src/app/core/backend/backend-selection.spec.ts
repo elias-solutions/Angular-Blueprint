@@ -4,7 +4,7 @@ import { AppConfigStore } from '../config/app-config-store';
 import { BACKEND_STORAGE_KEY, BackendSelection } from './backend-selection';
 
 const CONFIG: AppConfig = {
-  auditUserId: 'u1',
+  auth: { url: 'http://localhost:8180', realm: 'blueprint', clientId: 'blueprint-angular' },
   defaultBackendId: 'java',
   backends: [
     { id: 'net-api', label: '.NET', kind: 'blueprint-api', baseUrl: '/backend/net-api/api/v1' },

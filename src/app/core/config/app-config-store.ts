@@ -1,14 +1,23 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, inject, signal } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
 import { AppConfig } from './app-config';
 
 export const APP_CONFIG_URL = 'config.json';
 
-/** Runtime configuration from `public/config.json`, loaded once before bootstrap. */
+/**
+ * Loads `public/config.json` before bootstrap: Keycloak needs its realm before Angular's
+ * providers (and thus `HttpClient`) exist.
+ */
+export async function fetchAppConfig(): Promise<AppConfig> {
+  const response = await fetch(APP_CONFIG_URL);
+  if (!response.ok) {
+    throw new Error(`Could not load ${APP_CONFIG_URL} (HTTP ${response.status}).`);
+  }
+  return (await response.json()) as AppConfig;
+}
+
+/** Runtime configuration from `public/config.json`. */
 @Injectable({ providedIn: 'root' })
 export class AppConfigStore {
-  private readonly http = inject(HttpClient);
   private readonly state = signal<AppConfig | null>(null);
 
   config(): AppConfig {
@@ -19,11 +28,6 @@ export class AppConfigStore {
     return config;
   }
 
-  async load(): Promise<void> {
-    this.state.set(await firstValueFrom(this.http.get<AppConfig>(APP_CONFIG_URL)));
-  }
-
-  /** For tests and hosts that provide the configuration in-process. */
   use(config: AppConfig): void {
     this.state.set(config);
   }

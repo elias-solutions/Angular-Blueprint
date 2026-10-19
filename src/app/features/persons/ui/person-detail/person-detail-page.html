@@ -20,7 +20,7 @@
     </div>
     <div
       class="header-actions"
-      [matTooltip]="store.canWrite() ? '' : ('common.readOnlyHint' | transloco)"
+      [matTooltip]="store.canWrite() ? '' : (store.readOnlyHint() | transloco)"
     >
       <button mat-stroked-button [disabled]="!store.canWrite()" (click)="editPerson(person)">
         <mat-icon>edit</mat-icon> {{ 'common.edit' | transloco }}
@@ -97,7 +97,7 @@
   <section class="mat-elevation-z1 table-card">
     <div class="section-header">
       <h2>{{ 'persons.detail.addresses' | transloco }}</h2>
-      <span [matTooltip]="store.canWrite() ? '' : ('common.readOnlyHint' | transloco)">
+      <span [matTooltip]="store.canWrite() ? '' : (store.readOnlyHint() | transloco)">
         <button mat-flat-button [disabled]="!store.canWrite()" (click)="addAddress(person)">
           <mat-icon>add_location_alt</mat-icon> {{ 'persons.detail.addAddress' | transloco }}
         </button>

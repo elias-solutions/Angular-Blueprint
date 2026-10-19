@@ -55,6 +55,7 @@ describe('PersonDetailPage', () => {
             loading: signal(false),
             activeApi: api,
             canWrite: computed(() => api().capabilities.write),
+            readOnlyHint: signal('common.readOnlyHint'),
             loadPerson: () => Promise.resolve(),
           },
         },

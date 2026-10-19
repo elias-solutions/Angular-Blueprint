@@ -5,6 +5,10 @@ export const en: Translations = {
     title: 'Person management',
     language: 'Language',
   },
+  auth: {
+    signedInAs: 'Signed in as {{name}}',
+    logout: 'Sign out',
+  },
   backend: {
     label: 'Backend',
     readOnly: 'This backend is read-only.',
@@ -20,11 +24,14 @@ export const en: Translations = {
     close: 'Close',
     lastChange: 'Last change',
     readOnlyHint: 'The active backend is read-only.',
+    adminOnlyHint: 'Only administrators can make changes.',
     dateHint: 'DD/MM/YYYY (optional)',
   },
   errors: {
     unknown: 'Unknown error.',
     unreachable: 'Backend not reachable.',
+    unauthorized: 'Session expired – please sign in again.',
+    forbidden: 'You are not allowed to do this.',
     rateLimited: 'Too many requests – please wait a moment.',
     server: 'Server error (HTTP {{status}}).',
   },
