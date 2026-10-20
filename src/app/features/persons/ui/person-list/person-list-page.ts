@@ -21,6 +21,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { LanguageService } from '../../../../i18n/language.service';
 import { LocalizedDatePipe, formatIsoDate } from '../../../../i18n/localized-date.pipe';
 import { Person, toPersonDraft } from '../../domain/person';
+import { PersonChanges } from '../../state/person-changes';
 import { PersonsStore } from '../../state/persons-store';
 import { PersonDialogs } from '../person-dialogs';
 import { personTypeLabelKey } from '../person-labels';
@@ -51,6 +52,7 @@ export class PersonListPage {
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
   private readonly language = inject(LanguageService);
+  private readonly changes = inject(PersonChanges);
   private readonly sort = viewChild.required(MatSort);
   private readonly paginator = viewChild.required(MatPaginator);
 
@@ -72,6 +74,7 @@ export class PersonListPage {
 
     effect(() => {
       this.store.activeApi();
+      this.changes.revision();
       untracked(() => void this.store.load());
     });
     effect(() => (this.dataSource.data = [...this.store.persons()]));

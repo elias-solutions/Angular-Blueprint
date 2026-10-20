@@ -1,0 +1,153 @@
+<header class="chat-header">
+  <mat-icon>smart_toy</mat-icon>
+  <h2>{{ 'chat.title' | transloco }}</h2>
+  <span class="spacer"></span>
+  <button
+    mat-icon-button
+    class="clear"
+    [disabled]="session.busy()"
+    (click)="session.clear()"
+    [attr.aria-label]="'chat.clear' | transloco"
+    [matTooltip]="'chat.clear' | transloco"
+  >
+    <mat-icon>delete_sweep</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    class="close"
+    (click)="panel.close()"
+    [attr.aria-label]="'chat.close' | transloco"
+    [matTooltip]="'chat.close' | transloco"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</header>
+
+<div class="chat-provider">
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-icon matPrefix>memory</mat-icon>
+    <mat-label>{{ 'chat.provider' | transloco }}</mat-label>
+    <mat-select
+      [value]="providers.active().id"
+      [disabled]="session.busy()"
+      (selectionChange)="providers.select($event.value)"
+    >
+      @for (provider of providers.providers; track provider.id) {
+        <mat-option [value]="provider.id">{{ provider.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div class="chat-log" #log aria-live="polite">
+  @for (entry of session.entries(); track $index) {
+    @switch (entry.kind) {
+      @case ('tool') {
+        <div class="tool" [class.failed]="!entry.succeeded">
+          <mat-icon>{{ entry.succeeded ? 'build' : 'block' }}</mat-icon>
+          @if (toolLabelKey(entry.toolName); as key) {
+            <span>{{ key | transloco }}</span>
+          } @else {
+            <span>{{ entry.toolName }}</span>
+          }
+          @if (!entry.succeeded) {
+            <span>– {{ 'chat.toolFailed' | transloco }}</span>
+          }
+        </div>
+      }
+      @case ('user') {
+        <div class="bubble user">
+          @if (entry.text) {
+            <div class="text">{{ entry.text }}</div>
+          }
+          @for (name of entry.attachments; track $index) {
+            <div class="attachment">
+              <mat-icon>attach_file</mat-icon>
+              <span>{{ name }}</span>
+            </div>
+          }
+        </div>
+      }
+      @default {
+        <div class="bubble" [class]="entry.kind">{{ entry.text }}</div>
+      }
+    }
+  } @empty {
+    <p class="intro">{{ 'chat.intro' | transloco }}</p>
+  }
+  @if (session.busy()) {
+    <div class="working">
+      <span>{{ 'chat.thinking' | transloco }}</span>
+      <mat-progress-bar mode="indeterminate" />
+    </div>
+  }
+</div>
+
+<form
+  class="chat-input"
+  (submit)="onSubmit($event)"
+  (dragover)="$event.preventDefault()"
+  (drop)="onDrop($event)"
+>
+  @if (pending.attachments().length > 0) {
+    <mat-chip-set class="pending">
+      @for (attachment of pending.attachments(); track attachment) {
+        <mat-chip (removed)="pending.remove(attachment)">
+          <mat-icon matChipAvatar>{{ attachmentIcons[attachment.kind] }}</mat-icon>
+          {{ attachment.name }}
+          <button
+            matChipRemove
+            [attr.aria-label]="'chat.removeAttachment' | transloco: { name: attachment.name }"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+      }
+    </mat-chip-set>
+  }
+  @for (rejection of pending.rejections(); track $index) {
+    <p class="rejection">
+      {{ 'chat.attachmentErrors.' + rejection.reason | transloco: { name: rejection.fileName } }}
+    </p>
+  }
+  <div class="composer">
+    <input
+      #files
+      type="file"
+      multiple
+      hidden
+      [accept]="pending.accept()"
+      (change)="attach(files)"
+    />
+    <button
+      mat-icon-button
+      type="button"
+      class="attach"
+      [disabled]="session.busy()"
+      (click)="files.click()"
+      [attr.aria-label]="'chat.attach' | transloco"
+      [matTooltip]="'chat.attach' | transloco"
+    >
+      <mat-icon>attach_file</mat-icon>
+    </button>
+    <mat-form-field subscriptSizing="dynamic">
+      <textarea
+        matInput
+        rows="2"
+        [formControl]="message"
+        [placeholder]="'chat.placeholder' | transloco"
+        (keydown)="onKeydown($event)"
+      ></textarea>
+    </mat-form-field>
+    <button
+      mat-icon-button
+      type="submit"
+      class="send"
+      [disabled]="session.busy()"
+      [attr.aria-label]="'chat.send' | transloco"
+      [matTooltip]="'chat.send' | transloco"
+    >
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</form>

@@ -13,5 +13,10 @@
     "target": "http://localhost:5206",
     "pathRewrite": { "^/backend/net-minimal-api": "" },
     "changeOrigin": true
+  },
+  "/backend/ai": {
+    "target": "http://localhost:5300",
+    "pathRewrite": { "^/backend/ai": "" },
+    "changeOrigin": true
   }
 }

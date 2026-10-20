@@ -5,6 +5,7 @@ import { BACKEND_STORAGE_KEY, BackendSelection } from './backend-selection';
 
 const CONFIG: AppConfig = {
   auth: { url: 'http://localhost:8180', realm: 'blueprint', clientId: 'blueprint-angular' },
+  chat: { defaultProviderId: 'local', providers: [] },
   defaultBackendId: 'java',
   backends: [
     { id: 'net-api', label: '.NET', kind: 'blueprint-api', baseUrl: '/backend/net-api/api/v1' },

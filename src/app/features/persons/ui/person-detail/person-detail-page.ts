@@ -22,6 +22,7 @@ import {
   withAddressRemoved,
   withAddressReplaced,
 } from '../../domain/person-addresses';
+import { PersonChanges } from '../../state/person-changes';
 import { PersonsStore } from '../../state/persons-store';
 import { PersonDialogs } from '../person-dialogs';
 import { genderLabelKey, personTypeLabelKey } from '../person-labels';
@@ -49,6 +50,7 @@ export class PersonDetailPage {
   protected readonly store = inject(PersonsStore);
   private readonly dialogs = inject(PersonDialogs);
   private readonly router = inject(Router);
+  private readonly changes = inject(PersonChanges);
 
   protected readonly person = computed(() => {
     const selected = this.store.selected();
@@ -61,6 +63,7 @@ export class PersonDetailPage {
   constructor() {
     effect(() => {
       this.store.activeApi();
+      this.changes.revision();
       const id = this.id();
       untracked(() => void this.store.loadPerson(id));
     });

@@ -6,9 +6,25 @@
   <span class="spacer"></span>
   <app-language-switcher />
   <app-backend-switcher />
+  <app-chat-toggle />
   <app-user-menu />
 </mat-toolbar>
 
-<main class="content">
-  <router-outlet />
-</main>
+<mat-sidenav-container class="shell">
+  <mat-sidenav-content>
+    <main class="content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+  <mat-sidenav
+    position="end"
+    mode="side"
+    class="chat-sidenav"
+    [opened]="chatPanel.open()"
+    (closed)="chatPanel.close()"
+  >
+    @defer (when chatPanel.open()) {
+      <app-chat-panel />
+    }
+  </mat-sidenav>
+</mat-sidenav-container>

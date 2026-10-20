@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { BackendConfig } from '../config/app-config';
 import { AppConfigStore } from '../config/app-config-store';
+import { readStored, writeStored } from '../../shared/storage/local-storage';
 
 export const BACKEND_STORAGE_KEY = 'angular-blueprint.backend';
 
@@ -17,31 +18,15 @@ export class BackendSelection {
       throw new Error(`Unknown backend '${id}'.`);
     }
     this.activeId.set(id);
-    writeStoredId(id);
+    writeStored(BACKEND_STORAGE_KEY, id);
   }
 
   private initialId(): string {
-    const stored = readStoredId();
+    const stored = readStored(BACKEND_STORAGE_KEY);
     return stored && this.find(stored) ? stored : this.config.defaultBackendId;
   }
 
   private find(id: string): BackendConfig | undefined {
     return this.config.backends.find((backend) => backend.id === id);
-  }
-}
-
-function readStoredId(): string | null {
-  try {
-    return localStorage.getItem(BACKEND_STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function writeStoredId(id: string): void {
-  try {
-    localStorage.setItem(BACKEND_STORAGE_KEY, id);
-  } catch {
-    // Storage may be unavailable (private mode); the selection then only lasts for the session.
   }
 }

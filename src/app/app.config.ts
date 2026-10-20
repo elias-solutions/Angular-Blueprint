@@ -13,6 +13,7 @@ import { routes } from './app.routes';
 import { provideAuth } from './core/auth/provide-auth';
 import { AppConfig } from './core/config/app-config';
 import { AppConfigStore } from './core/config/app-config-store';
+import { provideChat } from './features/chat/provide-chat';
 import { providePersonApis } from './features/persons/data/person-api.providers';
 import { provideI18n } from './i18n/provide-i18n';
 
@@ -25,6 +26,7 @@ export function createAppConfig(config: AppConfig): ApplicationConfig {
       provideAppInitializer(() => inject(AppConfigStore).use(config)),
       provideAuth(config.auth),
       providePersonApis(),
+      provideChat(),
       provideI18n(),
       { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
     ],

@@ -23,6 +23,8 @@ einen `kind`, der die REST-Strategie bestimmt:
 | `net-api` | NET-Blueprint / Api (Controller) | `blueprint-api` | `/backend/net-api` → http://localhost:5102 |
 | `net-minimal-api` | NET-Blueprint / Minimal.Api | `blueprint-api` | `/backend/net-minimal-api` → http://localhost:5206 |
 
+Der KI-Assistent spricht über das KI-Gateway `Python-Blueprint`: `/backend/ai` → http://localhost:5300.
+
 - Keines der Backends erlaubt CORS → im Dev-Betrieb läuft alles über den Proxy. Für ein Deployment
   `baseUrl` auf die echte URL setzen und im Backend CORS freischalten (oder Reverse-Proxy).
 - Die Ziele sind die HTTP-Ports aus `launchSettings.json` / `application.properties`; `docker-compose.yml`
@@ -32,11 +34,48 @@ einen `kind`, der die REST-Strategie bestimmt:
   darf zusätzlich löschen. Die Keycloak-User-Id wird
   als `createdId`/`modifiedId` gesendet.
 
+## KI-Assistent
+
+Seitenpanel rechts (Toolbar → Roboter-Symbol). Ein LLM – lokal (`qwen3:8b` über Ollama) oder bei
+OpenAI, im Panel umschaltbar, beide über das KI-Gateway `Python-Blueprint` – beantwortet Fragen und führt Aktionen über Tools aus – mit genau den Rechten des
+angemeldeten Benutzers:
+
+| Rolle | Tools |
+|---|---|
+| `reader` | `search_persons`, `get_person` |
+| `writer` | zusätzlich `create_person`, `update_person`, `add_address`, `remove_address` |
+| `admin` | zusätzlich `delete_person` |
+
+- Konfiguration in `config.json` → `chat.providers` (`baseUrl`, `model`, optional `reasoningEffort`;
+  `none` schaltet das Thinking von Qwen ab und ist ~3× schneller; `capabilities` legt fest, ob das
+  Modell Bilder/PDFs lesen kann) und `chat.defaultProviderId`. Die Auswahl im Panel wird im
+  `localStorage` gemerkt. `baseUrl` zeigt auf `/backend/ai/api/v1/providers/{ollama|openai}`.
+- Das Gateway prüft das Keycloak-Token (wird wie bei allen `/backend/`-URLs mitgeschickt), lässt
+  nur freigegebene Modelle zu und ergänzt den OpenAI-Key serverseitig – der Key erreicht nie den
+  Browser. Key setzen: `Init-Blueprint/.env` (siehe README dort). Neue Modelle müssen in
+  `config.json` **und** in der Allowlist des Gateways (`OPENAI_MODELS`/`OLLAMA_MODELS`) stehen.
+- Dateien anhängen (Büroklammer oder Drag & Drop) und im Text sagen, was damit passieren soll.
+  Text (txt, md, csv, tsv, json, xml, yaml, log; max. 200 KB) geht bei allen Modellen als Text mit.
+  Bilder (png, jpeg, webp, gif; max. 10 MB) und PDFs (max. 20 MB) nur bei Modellen mit passender
+  `capability`. Achtung: Ollama läuft mit `OLLAMA_CONTEXT_LENGTH` 8192 – grosse Textdateien sprengen
+  den Kontext.
+- Die Tools rufen dieselbe `PersonApi` wie die Oberfläche auf (Bearer-Token des Benutzers) – das
+  Backend prüft die Rechte also zusätzlich. Nicht erlaubte Tools werden dem Modell gar nicht
+  angeboten und bei einem Aufruf trotzdem abgelehnt.
+- Die Tool-Schleife läuft im Browser; das Token geht an das Gateway, aber nie an das LLM.
+
 ## Architektur
 
 ```
 src/app/
   core/            Konfiguration, Backend-Auswahl, Fehler-Mapping, Notifications
+  features/chat/
+    attachments/   AttachmentFormat-Strategien (Text/Bild/PDF), AttachmentReader
+    data/          LlmClient-Abstraktion + OpenAiLlmClient (OpenAI-kompatible API)
+    tools/         ChatTool-Strategien (Person-Tools), ToolPermissionPolicy, ChatToolRegistry
+    state/         ChatSession (LLM ↔ Tool-Schleife), System-Prompt, Panel-Zustand,
+                   Modell-Auswahl, anstehende Anhänge
+    ui/            ChatPanel (per @defer erst beim Öffnen geladen)
   features/persons/
     domain/        Person/Address-Modell, Adress-Operationen (rein, getestet)
     data/          PersonApi-Abstraktion + Strategien je Backend-kind, Resolver

@@ -1,6 +1,11 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 .app-toolbar {
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   z-index: 10;
   gap: 16px;
   min-height: 72px;
@@ -19,6 +24,17 @@
 
 .spacer {
   flex: 1;
+}
+
+.shell {
+  flex: 1;
+  min-height: 0;
+  background: var(--mat-sys-surface);
+}
+
+.chat-sidenav {
+  width: min(420px, 100vw);
+  border-left: 1px solid var(--mat-sys-outline-variant);
 }
 
 .content {
