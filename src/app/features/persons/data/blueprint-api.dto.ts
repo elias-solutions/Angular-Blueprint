@@ -1,6 +1,5 @@
 import { Gender, PersonType } from '../domain/person';
 
-/** Wire contract of `/api/v1` shared by NET-Blueprint (Api, Minimal.Api) and Java-Blueprint. */
 export interface GetAddressResponse {
   id: string;
   street: string;

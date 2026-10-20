@@ -3,10 +3,6 @@ import { AppConfig } from './app-config';
 
 export const APP_CONFIG_URL = 'config.json';
 
-/**
- * Loads `public/config.json` before bootstrap: Keycloak needs its realm before Angular's
- * providers (and thus `HttpClient`) exist.
- */
 export async function fetchAppConfig(): Promise<AppConfig> {
   const response = await fetch(APP_CONFIG_URL);
   if (!response.ok) {
@@ -15,7 +11,6 @@ export async function fetchAppConfig(): Promise<AppConfig> {
   return (await response.json()) as AppConfig;
 }
 
-/** Runtime configuration from `public/config.json`. */
 @Injectable({ providedIn: 'root' })
 export class AppConfigStore {
   private readonly state = signal<AppConfig | null>(null);

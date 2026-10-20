@@ -22,11 +22,9 @@ export interface Address extends AuditInfo {
   readonly postalCode: string;
 }
 
-/** The person's own data, without identity, audit and addresses. */
 export interface PersonProfile {
   readonly firstName: string;
   readonly lastName: string;
-  /** ISO calendar date, `yyyy-MM-dd`. */
   readonly birthday: string | null;
   readonly gender: Gender | null;
   readonly description: string | null;
@@ -41,7 +39,6 @@ export interface Person extends AuditInfo, PersonProfile {
 }
 
 export interface AddressDraft {
-  /** `null` for an address that does not exist in the backend yet. */
   readonly id: string | null;
   readonly street: string;
   readonly number: string;
@@ -87,7 +84,6 @@ export function fullName(person: Pick<Person, 'firstName' | 'lastName'>): string
   return `${person.firstName} ${person.lastName}`;
 }
 
-/** Single-line postal form, e.g. `Hauptstrasse 1, 4600 Olten`. */
 export function addressLine(address: Omit<AddressDraft, 'id'>): string {
   return `${address.street} ${address.number}, ${address.postalCode} ${address.city}`;
 }

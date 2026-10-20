@@ -13,7 +13,6 @@ export function formatIsoDate(
   return formatDate(value, display === 'date' ? format.date : format.dateTime, format.locale);
 }
 
-/** Formats ISO dates in the active language's pattern; impure so it follows language switches. */
 @Pipe({ name: 'localDate', pure: false })
 export class LocalizedDatePipe implements PipeTransform {
   private readonly language = inject(LanguageService);

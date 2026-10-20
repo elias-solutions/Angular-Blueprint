@@ -6,7 +6,6 @@ import { Address, AddressDraft, Person, addressLine, fullName } from '../domain/
 import { AddressDialog, AddressDialogData } from './address-dialog/address-dialog';
 import { PersonDialog, PersonDialogData, PersonDialogResult } from './person-dialog/person-dialog';
 
-/** Opens the persons feature's dialogs; resolves `undefined` when the user cancels. */
 @Injectable({ providedIn: 'root' })
 export class PersonDialogs {
   private readonly dialog = inject(AppDialog);

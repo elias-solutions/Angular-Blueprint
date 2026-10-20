@@ -28,7 +28,8 @@ einen `kind`, der die REST-Strategie bestimmt:
 - Die Ziele sind die HTTP-Ports aus `launchSettings.json` / `application.properties`; `docker-compose.yml`
   mappt die Container auf dieselben Host-Ports → der Proxy funktioniert lokal wie gegen die Container.
 - Anmeldung über Keycloak (`auth` in `config.json`, Realm `blueprint` aus dem Compose, Port 8180):
-  `user`/`password` darf lesen, `admin`/`admin` darf zusätzlich ändern. Die Keycloak-User-Id wird
+  `reader`/`reader` darf lesen, `writer`/`writer` darf zusätzlich anlegen und ändern, `admin`/`admin`
+  darf zusätzlich löschen. Die Keycloak-User-Id wird
   als `createdId`/`modifiedId` gesendet.
 
 ## Architektur

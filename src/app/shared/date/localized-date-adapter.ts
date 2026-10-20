@@ -10,10 +10,6 @@ import {
 
 const DAY_MONTH_YEAR = /^\d{1,2}-\d{1,2}-\d{4}$/;
 
-/**
- * Native adapter that reads and writes numeric day-first dates (`dd.MM.yyyy`, `dd/MM/yyyy`, …)
- * with the separator of the current locale; switch it via `setLocale`.
- */
 @Injectable()
 export class LocalizedDateAdapter extends NativeDateAdapter {
   override parse(value: unknown, parseFormat: unknown): Date | null {
@@ -54,13 +50,11 @@ export class LocalizedDateAdapter extends NativeDateAdapter {
   }
 }
 
-/** A `null` input format makes the adapter render its own numeric date instead of `Intl`'s output. */
 const LOCALIZED_DATE_FORMATS: MatDateFormats = {
   ...MAT_NATIVE_DATE_FORMATS,
   display: { ...MAT_NATIVE_DATE_FORMATS.display, dateInput: null },
 };
 
-/** Everything Material's date components need; starts Swiss, `LanguageService` switches the locale. */
 export function provideLocalizedDates(): Provider[] {
   return [
     { provide: MAT_DATE_LOCALE, useValue: 'de-CH' },

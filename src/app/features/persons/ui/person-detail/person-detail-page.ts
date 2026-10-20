@@ -44,7 +44,6 @@ import { genderLabelKey, personTypeLabelKey } from '../person-labels';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersonDetailPage {
-  /** Bound from the `:id` route parameter. */
   readonly id = input.required<string>();
 
   protected readonly store = inject(PersonsStore);

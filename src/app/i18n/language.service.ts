@@ -13,7 +13,6 @@ import {
 
 export const LANGUAGE_STORAGE_KEY = 'angular-blueprint.language';
 
-/** The UI language: drives texts, date formats and `<html lang>`; remembered per browser. */
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
   private readonly transloco = inject(TranslocoService);

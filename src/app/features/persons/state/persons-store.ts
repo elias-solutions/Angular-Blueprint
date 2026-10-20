@@ -7,7 +7,6 @@ import { NotificationService } from '../../../core/notification/notification.ser
 import { Person, PersonDraft, fullName } from '../domain/person';
 import { PersonApiResolver } from '../data/person-api-resolver';
 
-/** Feature state for persons: talks to the active `PersonApi` and reports outcomes to the user. */
 @Injectable()
 export class PersonsStore {
   private readonly resolver = inject(PersonApiResolver);
@@ -23,12 +22,14 @@ export class PersonsStore {
   readonly persons = this.personsState.asReadonly();
   readonly selected = this.selectedState.asReadonly();
   readonly loading = computed(() => this.pending() > 0);
-  /** Changes whenever the user switches backends; pages reload on it. */
   readonly activeApi = this.resolver.api;
-  readonly canWrite = computed(() => this.activeApi().capabilities.write && this.auth.isAdmin());
-  /** Translation key explaining why writing is disabled. */
+  readonly canWrite = computed(() => this.activeApi().capabilities.write && this.auth.canWrite());
+  readonly canDelete = computed(() => this.activeApi().capabilities.write && this.auth.canDelete());
   readonly readOnlyHint = computed(() =>
-    this.auth.isAdmin() ? 'common.readOnlyHint' : 'common.adminOnlyHint',
+    this.auth.canWrite() ? 'common.readOnlyHint' : 'common.writerOnlyHint',
+  );
+  readonly deleteHint = computed(() =>
+    this.auth.canDelete() ? 'common.readOnlyHint' : 'common.adminOnlyHint',
   );
 
   async load(): Promise<void> {
@@ -41,7 +42,6 @@ export class PersonsStore {
     this.selectedState.set(result.ok ? result.value : null);
   }
 
-  /** Returns the new person's id, or `null` if creation failed. */
   async create(draft: PersonDraft): Promise<string | null> {
     const result = await this.run(this.api().create(draft));
     if (!result.ok) {
@@ -73,7 +73,6 @@ export class PersonsStore {
     return ok;
   }
 
-  /** Reloads one person (new version) into the selection and the list without refetching all. */
   private async refresh(id: string): Promise<void> {
     const result = await this.run(this.api().getById(id));
     if (!result.ok) {
@@ -95,7 +94,6 @@ export class PersonsStore {
     );
   }
 
-  /** Runs a backend call, reporting failures to the user instead of rethrowing them. */
   private async run<T>(request: Observable<T>): Promise<Result<T>> {
     this.pending.update((count) => count + 1);
     try {

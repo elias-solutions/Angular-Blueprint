@@ -1,6 +1,5 @@
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
-/** Formats the local calendar date as `yyyy-MM-dd` (the backends' `DateOnly`/`LocalDate`). */
 export function toIsoDate(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, '0');
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;

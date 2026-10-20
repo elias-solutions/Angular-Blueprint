@@ -66,19 +66,21 @@ describe('PersonsStore', () => {
   let api: FakePersonApi;
   let store: PersonsStore;
   let notifications: { success: jest.Mock; error: jest.Mock };
-  let isAdmin: ReturnType<typeof signal<boolean>>;
+  let canWrite: ReturnType<typeof signal<boolean>>;
+  let canDelete: ReturnType<typeof signal<boolean>>;
 
   beforeEach(() => {
     api = new FakePersonApi();
     notifications = { success: jest.fn(), error: jest.fn() };
-    isAdmin = signal(true);
+    canWrite = signal(true);
+    canDelete = signal(true);
     TestBed.configureTestingModule({
       imports: [translocoTesting()],
       providers: [
         PersonsStore,
         { provide: PersonApiResolver, useValue: { api: signal(api) } },
         { provide: NotificationService, useValue: notifications },
-        { provide: AuthSession, useValue: { isAdmin } },
+        { provide: AuthSession, useValue: { canWrite, canDelete } },
       ],
     });
     store = TestBed.inject(PersonsStore);
@@ -156,14 +158,25 @@ describe('PersonsStore', () => {
     expect(notifications.success).toHaveBeenCalledWith('Anna Muster was created.');
   });
 
-  it('lets admins write', () => {
+  it('lets admins write and delete', () => {
     expect(store.canWrite()).toBe(true);
+    expect(store.canDelete()).toBe(true);
   });
 
-  it('keeps standard users read-only and says why', () => {
-    isAdmin.set(false);
+  it('lets writers write but not delete and says why', () => {
+    canDelete.set(false);
+
+    expect(store.canWrite()).toBe(true);
+    expect(store.canDelete()).toBe(false);
+    expect(store.deleteHint()).toBe('common.adminOnlyHint');
+  });
+
+  it('keeps readers read-only and says why', () => {
+    canWrite.set(false);
+    canDelete.set(false);
 
     expect(store.canWrite()).toBe(false);
-    expect(store.readOnlyHint()).toBe('common.adminOnlyHint');
+    expect(store.canDelete()).toBe(false);
+    expect(store.readOnlyHint()).toBe('common.writerOnlyHint');
   });
 });

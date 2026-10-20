@@ -2,7 +2,6 @@ import { Injectable, computed, inject } from '@angular/core';
 import { BackendSelection } from '../../../core/backend/backend-selection';
 import { PERSON_API_FACTORIES, PersonApi } from './person-api';
 
-/** Picks the `PersonApi` strategy matching the active backend's kind. */
 @Injectable({ providedIn: 'root' })
 export class PersonApiResolver {
   private readonly selection = inject(BackendSelection);

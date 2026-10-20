@@ -15,7 +15,6 @@ import { LanguageService } from './language.service';
 import { StaticTranslocoLoader } from './static-transloco-loader';
 import { TranslatedPaginatorIntl } from './translated-paginator-intl';
 
-/** Texts (Transloco), localized dates and Material labels; all languages are loaded at startup. */
 export function provideI18n(): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideTransloco({

@@ -4,7 +4,6 @@ import { AppConfigStore } from '../config/app-config-store';
 
 export const BACKEND_STORAGE_KEY = 'angular-blueprint.backend';
 
-/** The backend all REST calls currently go to; switchable at runtime and remembered per browser. */
 @Injectable({ providedIn: 'root' })
 export class BackendSelection {
   private readonly config = inject(AppConfigStore).config();

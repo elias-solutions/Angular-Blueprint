@@ -1,13 +1,10 @@
 import { Person, PersonType, fullName } from '../../domain/person';
 
-/** Language-dependent texts the table filters and sorts by. */
 export interface PersonTableText {
   typeLabel(type: PersonType): string;
-  /** Displayed form of an ISO calendar date. */
   date(isoDate: string): string;
 }
 
-/** Expects an already lower-cased filter, as `MatTableDataSource` provides it. */
 export function personMatchesFilter(
   person: Person,
   filter: string,

@@ -1,6 +1,5 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 
-/** Mirrors Java's `@NotBlank`: whitespace-only input is rejected like empty input. */
 export function notBlank(control: AbstractControl<string | null>): ValidationErrors | null {
   return (control.value ?? '').trim() === '' ? { blank: true } : null;
 }

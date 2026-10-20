@@ -10,7 +10,6 @@ export const DEFAULT_LANGUAGE: Language = 'de';
 
 export const TRANSLATIONS: Readonly<Record<Language, Translations>> = { de, en };
 
-/** Locale and date patterns a language uses for display and input (always day-first). */
 export interface LanguageFormat {
   readonly locale: string;
   readonly date: string;
@@ -26,7 +25,6 @@ export function isLanguage(value: unknown): value is Language {
   return LANGUAGES.includes(value as Language);
 }
 
-/** Angular's `formatDate` needs the locale data of every language's locale. */
 export function registerLanguageLocales(): void {
   registerLocaleData(localeDeCh);
   registerLocaleData(localeEnGb);

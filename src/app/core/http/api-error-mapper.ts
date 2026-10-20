@@ -2,7 +2,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 
-/** Covers RFC 9457 problem details, ASP.NET validation problems and the blueprints' `{title,status,detail}`. */
 interface ProblemBody {
   title?: string;
   detail?: string;
@@ -15,7 +14,6 @@ const STATUS_MESSAGE_KEYS: Readonly<Record<number, string>> = {
   403: 'errors.forbidden',
 };
 
-/** Turns any error raised by a backend call into a user-facing message in the active language. */
 @Injectable({ providedIn: 'root' })
 export class ApiErrorMapper {
   private readonly transloco = inject(TranslocoService);

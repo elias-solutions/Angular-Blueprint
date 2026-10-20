@@ -10,7 +10,6 @@ import { AddressDraft } from '../../domain/person';
 import { TEXT_MAX_LENGTH } from '../field-limits';
 
 export interface AddressDialogData {
-  /** Absent when adding a new address. */
   readonly address?: AddressDraft;
 }
 

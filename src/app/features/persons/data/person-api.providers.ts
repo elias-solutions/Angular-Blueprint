@@ -2,7 +2,6 @@ import { EnvironmentProviders, inject, makeEnvironmentProviders } from '@angular
 import { BlueprintPersonApiFactory } from './blueprint-person-api';
 import { PERSON_API_FACTORIES } from './person-api';
 
-/** Registers one `PersonApi` strategy per backend kind; add new backend contracts here. */
 export function providePersonApis(): EnvironmentProviders {
   return makeEnvironmentProviders([
     {

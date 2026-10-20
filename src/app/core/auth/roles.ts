@@ -1,5 +1,5 @@
-/** Realm roles of the Keycloak realm "blueprint". */
 export const ROLES = {
-  standard: 'standard',
+  reader: 'reader',
+  writer: 'writer',
   admin: 'admin',
 } as const;

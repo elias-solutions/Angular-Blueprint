@@ -7,14 +7,11 @@ export interface PersonApiCapabilities {
   readonly write: boolean;
 }
 
-/** Backend-agnostic access to persons; one strategy per `BackendKind`. */
 export interface PersonApi {
   readonly capabilities: PersonApiCapabilities;
   getAll(): Observable<Person[]>;
   getById(id: string): Observable<Person>;
-  /** Emits the id of the created person. */
   create(draft: PersonDraft): Observable<string>;
-  /** Replaces person data and synchronizes its addresses (missing ones are deleted). */
   update(original: Person, draft: PersonDraft): Observable<void>;
   delete(id: string): Observable<void>;
 }

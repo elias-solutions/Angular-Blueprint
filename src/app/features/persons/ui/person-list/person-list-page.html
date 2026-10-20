@@ -108,7 +108,7 @@
             mat-icon-button
             [matTooltip]="'common.delete' | transloco"
             [attr.aria-label]="'common.delete' | transloco"
-            [disabled]="!store.canWrite()"
+            [disabled]="!store.canDelete()"
             (click)="remove(person)"
           >
             <mat-icon>delete</mat-icon>

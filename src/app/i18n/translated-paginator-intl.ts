@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslocoService } from '@jsverse/transloco';
 
-/** Paginator texts from the translations, refreshed on every language change. */
 @Injectable()
 export class TranslatedPaginatorIntl extends MatPaginatorIntl {
   private readonly transloco = inject(TranslocoService);

@@ -24,7 +24,8 @@ export const en: Translations = {
     close: 'Close',
     lastChange: 'Last change',
     readOnlyHint: 'The active backend is read-only.',
-    adminOnlyHint: 'Only administrators can make changes.',
+    writerOnlyHint: 'Only users with write access can make changes.',
+    adminOnlyHint: 'Only administrators can delete.',
     dateHint: 'DD/MM/YYYY (optional)',
   },
   errors: {

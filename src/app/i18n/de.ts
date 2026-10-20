@@ -22,7 +22,8 @@ export const de = {
     close: 'Schliessen',
     lastChange: 'Letzte Änderung',
     readOnlyHint: 'Das aktive Backend ist schreibgeschützt.',
-    adminOnlyHint: 'Nur Administratoren dürfen Änderungen vornehmen.',
+    writerOnlyHint: 'Nur Benutzer mit Schreibrecht dürfen Änderungen vornehmen.',
+    adminOnlyHint: 'Nur Administratoren dürfen löschen.',
     dateHint: 'TT.MM.JJJJ (optional)',
   },
   errors: {
@@ -122,7 +123,6 @@ export const de = {
   },
 };
 
-/** Same keys as `de`, every leaf a string – other languages are checked against it at compile time. */
 export type Translations = TranslationShape<typeof de>;
 
 type TranslationShape<T> = {

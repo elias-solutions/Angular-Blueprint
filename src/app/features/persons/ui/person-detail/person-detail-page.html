@@ -18,21 +18,22 @@
         </p>
       }
     </div>
-    <div
-      class="header-actions"
-      [matTooltip]="store.canWrite() ? '' : (store.readOnlyHint() | transloco)"
-    >
-      <button mat-stroked-button [disabled]="!store.canWrite()" (click)="editPerson(person)">
-        <mat-icon>edit</mat-icon> {{ 'common.edit' | transloco }}
-      </button>
-      <button
-        mat-stroked-button
-        class="danger-outline"
-        [disabled]="!store.canWrite()"
-        (click)="removePerson(person)"
-      >
-        <mat-icon>delete</mat-icon> {{ 'common.delete' | transloco }}
-      </button>
+    <div class="header-actions">
+      <span [matTooltip]="store.canWrite() ? '' : (store.readOnlyHint() | transloco)">
+        <button mat-stroked-button [disabled]="!store.canWrite()" (click)="editPerson(person)">
+          <mat-icon>edit</mat-icon> {{ 'common.edit' | transloco }}
+        </button>
+      </span>
+      <span [matTooltip]="store.canDelete() ? '' : (store.deleteHint() | transloco)">
+        <button
+          mat-stroked-button
+          class="danger-outline"
+          [disabled]="!store.canDelete()"
+          (click)="removePerson(person)"
+        >
+          <mat-icon>delete</mat-icon> {{ 'common.delete' | transloco }}
+        </button>
+      </span>
     </div>
   </header>
 

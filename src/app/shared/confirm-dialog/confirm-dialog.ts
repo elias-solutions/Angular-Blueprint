@@ -3,14 +3,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { TranslocoPipe } from '@jsverse/transloco';
 
-/** Texts are passed in already translated. */
 export interface ConfirmDialogData {
   readonly title: string;
   readonly message: string;
   readonly confirmLabel: string;
 }
 
-/** Closes with `true` when confirmed. */
 @Component({
   selector: 'app-confirm-dialog',
   imports: [MatDialogModule, MatButtonModule, TranslocoPipe],

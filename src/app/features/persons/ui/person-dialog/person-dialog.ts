@@ -26,7 +26,6 @@ import {
 import { genderLabelKey, personTypeLabelKey } from '../person-labels';
 
 export interface PersonDialogData {
-  /** Absent when creating a new person. */
   readonly person?: Person;
 }
 
